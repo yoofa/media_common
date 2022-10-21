@@ -27,6 +27,7 @@ static_library("foundation") {
     "media_buffer.h",
     "media_defs.cc",
     "media_defs.h",
+    "media_source.h",
     "message.cc",
     "message.h",
     "meta_data.cc",
