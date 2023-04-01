@@ -810,6 +810,7 @@ inline static const char* asString_BitrateMode(int32_t i,
   }
 }
 
+constexpr int32_t COLOR_Unknown = -1;
 constexpr int32_t COLOR_Format12bitRGB444 = 3;
 constexpr int32_t COLOR_Format16bitARGB1555 = 5;
 constexpr int32_t COLOR_Format16bitARGB4444 = 4;

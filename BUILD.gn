@@ -40,6 +40,7 @@ static_library("foundation") {
 
   deps = [
     "//base",
+    "//base:byte_utils",
     "//base:count_down_latch",
     "//base:logging",
     "//base:utils",

@@ -22,9 +22,7 @@ Buffer::Buffer(size_t capacity)
       mOwnsData(true) {}
 
 Buffer::Buffer(void* data, size_t capacity)
-    :
-
-      mData(data),
+    : mData(data),
       mCapacity(capacity),
       mRangeOffset(0),
       mRangeLength(capacity),
