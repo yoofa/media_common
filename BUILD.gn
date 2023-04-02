@@ -1,8 +1,10 @@
 group("common") {
+  testonly = true
   deps = [ ":foundation" ]
 }
 
 static_library("foundation") {
+  testonly = true
   sources = [
     "avc_utils.cc",
     "avc_utils.h",
