@@ -13,38 +13,38 @@ namespace avp {
 
 MediaBuffer::MediaBuffer(std::shared_ptr<Message> meta,
                          std::shared_ptr<Buffer> buffer)
-    : mMeta(std::move(meta)), mBuffer(std::move(buffer)) {}
+    : meta_(std::move(meta)), buffer_(std::move(buffer)) {}
 
 uint8_t* MediaBuffer::base() {
-  return mBuffer->base();
+  return buffer_->base();
 }
 
 uint8_t* MediaBuffer::data() {
-  return mBuffer->data();
+  return buffer_->data();
 }
 size_t MediaBuffer::capacity() const {
-  return mBuffer->capacity();
+  return buffer_->capacity();
 }
 
 size_t MediaBuffer::size() const {
-  return mBuffer->size();
+  return buffer_->size();
 }
 
 size_t MediaBuffer::offset() const {
-  return mBuffer->offset();
+  return buffer_->offset();
 }
 
 std::shared_ptr<Message> MediaBuffer::meta() {
-  return mMeta;
+  return meta_;
 }
 
 void MediaBuffer::setRange(size_t offset, size_t size) {
-  mBuffer->setRange(offset, size);
+  buffer_->setRange(offset, size);
 }
 
 void MediaBuffer::setMeta(std::shared_ptr<Message> meta) {
-  mMeta->clear();
-  mMeta = std::move(meta);
+  meta_->clear();
+  meta_ = std::move(meta);
 }
 
 }  // namespace avp

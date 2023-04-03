@@ -28,8 +28,8 @@ class MediaBuffer {
   void setMeta(std::shared_ptr<Message> meta);
 
  private:
-  std::shared_ptr<Message> mMeta;
-  std::shared_ptr<Buffer> mBuffer;
+  std::shared_ptr<Message> meta_;
+  std::shared_ptr<Buffer> buffer_;
 };
 }  // namespace avp
 

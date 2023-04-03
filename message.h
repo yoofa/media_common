@@ -32,26 +32,26 @@ class MessageObject {
 class ReplyToken : public MessageObject {
  public:
   explicit ReplyToken(const std::shared_ptr<Looper>& looper)
-      : mLooper(looper), mReplied(false) {}
+      : looper_(looper), replied_(false) {}
   virtual ~ReplyToken() = default;
 
  private:
   friend class Message;
   friend class Looper;
-  std::weak_ptr<Looper> mLooper;
-  std::shared_ptr<Message> mReply;
-  bool mReplied;
+  std::weak_ptr<Looper> looper_;
+  std::shared_ptr<Message> reply_;
+  bool replied_;
 
-  std::shared_ptr<Looper> getLooper() const { return mLooper.lock(); }
+  std::shared_ptr<Looper> getLooper() const { return looper_.lock(); }
 
   status_t setReply(const std::shared_ptr<Message>& reply);
 
   bool getReply(std::shared_ptr<Message>& reply) {
-    if (mReplied) {
-      reply = std::move(mReply);
+    if (replied_) {
+      reply = std::move(reply_);
     }
 
-    return mReplied;
+    return replied_;
   }
 };
 
@@ -73,7 +73,7 @@ class Message : public std::enable_shared_from_this<Message> {
   };
 
   struct Rect {
-    int32_t mLeft, mTop, mRight, mBottom;
+    int32_t left_, top_, right_, bottom_;
   };
 
   struct Item {
@@ -155,11 +155,11 @@ class Message : public std::enable_shared_from_this<Message> {
  private:
   friend class Looper;  // for deliver()
 
-  uint32_t mWhat;
-  Looper::handler_id mHandlerId;
-  std::weak_ptr<Handler> mHandler;
-  std::weak_ptr<Looper> mLooper;
-  std::unordered_map<std::string, std::shared_ptr<Item>> mItems;
+  uint32_t what_;
+  Looper::handler_id handler_id_;
+  std::weak_ptr<Handler> handler_;
+  std::weak_ptr<Looper> looper_;
+  std::unordered_map<std::string, std::shared_ptr<Item>> items_;
 
   std::shared_ptr<Item> allocateItem(const char* name);
   std::shared_ptr<Item> findItem(const char* name, Type) const;

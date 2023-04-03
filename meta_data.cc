@@ -57,31 +57,31 @@ struct MetaData::MetaDataInternal {
   std::unordered_map<uint32_t, MetaData::typed_data> mItems;
 };
 
-MetaData::MetaData() : mInternalData(new MetaDataInternal()) {}
+MetaData::MetaData() : internal_data_(new MetaDataInternal()) {}
 
 MetaData::MetaData(const MetaData& rhs)
-    : mInternalData(new MetaDataInternal()) {
-  mInternalData->mItems = rhs.mInternalData->mItems;
+    : internal_data_(new MetaDataInternal()) {
+  internal_data_->mItems = rhs.internal_data_->mItems;
 }
 
 MetaData& MetaData::operator=(const MetaData& rhs) {
-  this->mInternalData->mItems = rhs.mInternalData->mItems;
+  this->internal_data_->mItems = rhs.internal_data_->mItems;
   return *this;
 }
 
 MetaData::~MetaData() {
   clear();
-  delete mInternalData;
+  delete internal_data_;
 }
 
 void MetaData::clear() {
-  mInternalData->mItems.clear();
+  internal_data_->mItems.clear();
 }
 
 bool MetaData::remove(uint32_t key) {
-  auto search = mInternalData->mItems.find(key);
-  if (search != mInternalData->mItems.end()) {
-    mInternalData->mItems.erase(search);
+  auto search = internal_data_->mItems.find(key);
+  if (search != internal_data_->mItems.end()) {
+    internal_data_->mItems.erase(search);
     return true;
   } else {
     return false;
@@ -228,11 +228,11 @@ bool MetaData::setData(uint32_t key,
                        size_t size) {
   bool overwrote_existing = true;
 
-  auto search = mInternalData->mItems.find(key);
-  if (search == mInternalData->mItems.end()) {
+  auto search = internal_data_->mItems.find(key);
+  if (search == internal_data_->mItems.end()) {
     typed_data item;
     item.setData(type, data, size);
-    mInternalData->mItems.insert(std::make_pair(key, item));
+    internal_data_->mItems.insert(std::make_pair(key, item));
     overwrote_existing = false;
   } else {
     typed_data item = search->second;
@@ -246,8 +246,8 @@ bool MetaData::findData(uint32_t key,
                         uint32_t* type,
                         const void** data,
                         size_t* size) const {
-  auto search = mInternalData->mItems.find(key);
-  if (search == mInternalData->mItems.end()) {
+  auto search = internal_data_->mItems.find(key);
+  if (search == internal_data_->mItems.end()) {
     return false;
   }
 
@@ -258,8 +258,8 @@ bool MetaData::findData(uint32_t key,
 }
 
 bool MetaData::hasData(uint32_t key) const {
-  auto search = mInternalData->mItems.find(key);
-  if (search == mInternalData->mItems.end()) {
+  auto search = internal_data_->mItems.find(key);
+  if (search == internal_data_->mItems.end()) {
     return false;
   }
   return true;
@@ -399,7 +399,7 @@ static void MakeFourCCString(uint32_t x, char* s) {
 std::string MetaData::toString() const {
   std::stringstream ss;
   ss << "<|";
-  for (const auto& it : mInternalData->mItems) {
+  for (const auto& it : internal_data_->mItems) {
     int32_t key = it.first;
     char cc[5];
     MakeFourCCString(key, cc);
@@ -411,7 +411,7 @@ std::string MetaData::toString() const {
 }
 
 void MetaData::dumpToLog() const {
-  for (const auto& it : mInternalData->mItems) {
+  for (const auto& it : internal_data_->mItems) {
     int32_t key = it.first;
     char cc[5];
     MakeFourCCString(key, cc);

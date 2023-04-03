@@ -209,7 +209,7 @@ static inline std::string StrCryptoError(status_t err) {
     STATUS_CASE(ERROR_DRM_ZERO_SUBSAMPLES);
 #undef STATUS_CASE
   }
-  return statusToString(err);
+  return StatusToString(err);
 }
 } /* namespace avp */
 

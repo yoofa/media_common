@@ -11,7 +11,7 @@ namespace avp {
 
 void Handler::deliverMessage(const std::shared_ptr<Message>& message) {
   onMessageReceived(message);
-  mMessageCounter++;
+  message_counter_++;
 }
 
 }  // namespace avp

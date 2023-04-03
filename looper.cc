@@ -23,14 +23,14 @@ namespace avp {
 HandlerRoster gRoster;
 
 Looper::Looper()
-    : mThread(nullptr), mLooping(false), mStartLatch(1), mStoped(false) {}
+    : thread_(nullptr), looping_(false), start_latch_(1), stopped_(false) {}
 
 Looper::~Looper() {
   stop();
 }
 
 void Looper::setName(std::string name) {
-  mName = name;
+  name_ = name;
 }
 
 Looper::handler_id Looper::registerHandler(
@@ -38,41 +38,41 @@ Looper::handler_id Looper::registerHandler(
   return gRoster.registerHandler(shared_from_this(), handler);
 }
 
-void Looper::unregisterHandler(handler_id handlerId) {
-  gRoster.unregisterHandler(handlerId);
+void Looper::unregisterHandler(handler_id handler_id) {
+  gRoster.unregisterHandler(handler_id);
 }
 
 int32_t Looper::start(int32_t priority) {
-  std::lock_guard<std::mutex> guard(mMutex);
-  if (mThread.get()) {
+  std::lock_guard<std::mutex> guard(mutex_);
+  if (thread_.get()) {
     return -1;
   }
 
-  mThread = std::make_unique<std::thread>(&Looper::loop, this);
-  mLooping = true;
-  mStartLatch.wait();
+  thread_ = std::make_unique<std::thread>(&Looper::loop, this);
+  looping_ = true;
+  start_latch_.Wait();
   return 0;
 }
 
 int32_t Looper::stop() {
   // TODO(youfa) support stop in loop thread.
   {
-    std::lock_guard<std::mutex> guard(mMutex);
-    mStoped = true;
-    mLooping = false;
-    mCondition.notify_all();
+    std::lock_guard<std::mutex> guard(mutex_);
+    stopped_ = true;
+    looping_ = false;
+    condition_.notify_all();
   }
-  if (mThread.get()) {
-    mThread->join();
-    mThread.release();
+  if (thread_.get()) {
+    thread_->join();
+    thread_.release();
   }
   return 0;
 }
 
 void Looper::post(const std::shared_ptr<Message>& message,
                   const int64_t delayUs) {
-  std::lock_guard<std::mutex> guard(mMutex);
-  if (mStoped) {
+  std::lock_guard<std::mutex> guard(mutex_);
+  if (stopped_) {
     return;
   }
   int64_t whenUs;
@@ -86,39 +86,39 @@ void Looper::post(const std::shared_ptr<Message>& message,
   }
 
   std::unique_ptr<Event> event = std::make_unique<Event>();
-  event->mWhenUs = whenUs;
-  event->mMessage = std::move(message);
-  mEventQueue.push(std::move(event));
-  mCondition.notify_all();
+  event->when_us_ = whenUs;
+  event->message_ = std::move(message);
+  event_queue_.push(std::move(event));
+  condition_.notify_all();
 }
 
 void Looper::loop() {
-  mStartLatch.countDown();
+  start_latch_.CountDown();
   while (keepRunning()) {
     std::shared_ptr<Message> message;
     {
-      std::unique_lock<std::mutex> l(mMutex);
+      std::unique_lock<std::mutex> l(mutex_);
 
-      if (mEventQueue.size() == 0) {
-        mCondition.wait(l);
+      if (event_queue_.size() == 0) {
+        condition_.wait(l);
         continue;
       }
 
-      auto& event = mEventQueue.top();
+      auto& event = event_queue_.top();
       int64_t nowUs = getNowUs();
 
-      if (event->mWhenUs > nowUs) {
-        int64_t delayUs = event->mWhenUs - nowUs;
+      if (event->when_us_ > nowUs) {
+        int64_t delayUs = event->when_us_ - nowUs;
         if (delayUs > std::numeric_limits<int64_t>::max()) {
           delayUs = std::numeric_limits<int64_t>::max();
         }
 
-        mCondition.wait_for(l, std::chrono::microseconds(delayUs));
+        condition_.wait_for(l, std::chrono::microseconds(delayUs));
         continue;
       }
 
-      message = std::move(event->mMessage);
-      mEventQueue.pop();
+      message = std::move(event->message_);
+      event_queue_.pop();
     }
     message->deliver();
     message.reset();
@@ -126,8 +126,8 @@ void Looper::loop() {
 }
 
 bool Looper::keepRunning() {
-  std::lock_guard<std::mutex> l(mMutex);
-  return mLooping || (mEventQueue.size() > 0);
+  std::lock_guard<std::mutex> l(mutex_);
+  return looping_ || (event_queue_.size() > 0);
 }
 
 std::shared_ptr<ReplyToken> Looper::createReplyToken() {
@@ -136,10 +136,10 @@ std::shared_ptr<ReplyToken> Looper::createReplyToken() {
 
 status_t Looper::awaitResponse(const std::shared_ptr<ReplyToken>& replyToken,
                                std::shared_ptr<Message>& response) {
-  std::unique_lock<std::mutex> guard(mMutex);
+  std::unique_lock<std::mutex> guard(mutex_);
   // CHECK(replyToken != NULL)
   while (!replyToken->getReply(response)) {
-    mRepliesCondition.wait(guard);
+    replies_condition_.wait(guard);
   }
 
   return 0;
@@ -147,10 +147,10 @@ status_t Looper::awaitResponse(const std::shared_ptr<ReplyToken>& replyToken,
 
 status_t Looper::postReply(const std::shared_ptr<ReplyToken>& replyToken,
                            const std::shared_ptr<Message>& reply) {
-  std::lock_guard<std::mutex> guard(mMutex);
+  std::lock_guard<std::mutex> guard(mutex_);
   status_t err = replyToken->setReply(reply);
   if (err == 0) {
-    mRepliesCondition.notify_all();
+    replies_condition_.notify_all();
   }
   return err;
 }

@@ -16,20 +16,20 @@
 namespace avp {
 
 status_t ReplyToken::setReply(const std::shared_ptr<Message>& reply) {
-  if (mReplied) {
+  if (replied_) {
     return -1;
   }
   std::cout << "setReply" << std::endl;
-  // CHECK(mReply == nullptr);
-  mReply = reply;
-  mReplied = true;
+  // CHECK(reply_ == nullptr);
+  reply_ = reply;
+  replied_ = true;
   return 0;
 }
 
-Message::Message() : mWhat(0), mHandlerId(0) {}
+Message::Message() : what_(0), handler_id_(0) {}
 
 Message::Message(uint32_t what, const std::shared_ptr<Handler> handler)
-    : mWhat(what) {
+    : what_(what) {
   setHandler(handler);
 }
 
@@ -38,28 +38,28 @@ Message::~Message() {
 }
 
 void Message::setWhat(uint32_t what) {
-  mWhat = what;
+  what_ = what;
 }
 
 uint32_t Message::what() const {
-  return mWhat;
+  return what_;
 }
 
 void Message::setHandler(const std::shared_ptr<Handler> handler) {
   if (handler == nullptr || handler.get() == nullptr) {
-    mHandlerId = 0;
-    mHandler.reset();
-    mLooper.reset();
+    handler_id_ = 0;
+    handler_.reset();
+    looper_.reset();
 
   } else {
-    mHandlerId = handler->id();
-    mHandler = handler;
-    mLooper = handler->getLooper();
+    handler_id_ = handler->id();
+    handler_ = handler;
+    looper_ = handler->getLooper();
   }
 }
 
 status_t Message::post(int64_t delayUs) {
-  auto looper = mLooper.lock();
+  auto looper = looper_.lock();
   if (looper.get() != nullptr) {
     looper->post(shared_from_this(), delayUs);
   }
@@ -67,7 +67,7 @@ status_t Message::post(int64_t delayUs) {
 }
 
 status_t Message::postAndWaitResponse(std::shared_ptr<Message>& response) {
-  std::shared_ptr<Looper> looper = mLooper.lock();
+  std::shared_ptr<Looper> looper = looper_.lock();
   if (looper == nullptr) {
     return -1;
   }
@@ -104,7 +104,7 @@ status_t Message::postReply(const std::shared_ptr<ReplyToken>& replyId) {
 }
 
 void Message::clear() {
-  mItems.clear();
+  items_.clear();
 }
 
 // void Message::setObject(const char* name, std::shared_ptr<MessageObject>&
@@ -123,18 +123,18 @@ void Message::clear() {
 //
 
 std::shared_ptr<Message::Item> Message::allocateItem(const char* name) {
-  auto search = mItems.find(name);
-  if (search != mItems.end()) {
-    mItems.erase(search);
+  auto search = items_.find(name);
+  if (search != items_.end()) {
+    items_.erase(search);
   }
-  auto result = mItems.emplace(name, std::make_shared<Message::Item>());
+  auto result = items_.emplace(name, std::make_shared<Message::Item>());
   return result.first->second;
 }
 
 std::shared_ptr<Message::Item> Message::findItem(const char* name,
                                                  Type type) const {
-  auto search = mItems.find(name);
-  if (search != mItems.end()) {
+  auto search = items_.find(name);
+  if (search != items_.end()) {
     auto item = search->second;
     if (item->mType == type) {
       return item;
@@ -144,8 +144,8 @@ std::shared_ptr<Message::Item> Message::findItem(const char* name,
 }
 
 bool Message::contains(const char* name) const {
-  auto search = mItems.find(name);
-  return search != mItems.end();
+  auto search = items_.find(name);
+  return search != items_.end();
 }
 
 #define BASIC_TYPE(NAME, TYPENAME)                                    \
@@ -193,10 +193,10 @@ bool Message::findRect(const char* name,
   item = findItem(name, Message::kTypeRect);
   if (item) {
     Rect rect = std::get<Rect>(item->value);
-    *left = rect.mLeft;
-    *top = rect.mTop;
-    *right = rect.mRight;
-    *bottom = rect.mBottom;
+    *left = rect.left_;
+    *top = rect.top_;
+    *right = rect.right_;
+    *bottom = rect.bottom_;
     return true;
   }
   return false;
@@ -302,13 +302,13 @@ bool Message::findObject(const char* name,
 
 std::shared_ptr<Message> Message::dup() const {
   std::shared_ptr<Message> message =
-      std::make_shared<Message>(mWhat, mHandler.lock());
+      std::make_shared<Message>(what_, handler_.lock());
 
   return message;
 }
 
 void Message::deliver() {
-  auto handler = mHandler.lock();
+  auto handler = handler_.lock();
   if (handler.get() != nullptr) {
     handler->deliverMessage(shared_from_this());
   }

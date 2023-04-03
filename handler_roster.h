@@ -25,18 +25,18 @@ class HandlerRoster {
   Looper::handler_id registerHandler(const std::shared_ptr<Looper> looper,
                                      const std::shared_ptr<Handler> handler);
 
-  void unregisterHandler(Looper::handler_id handlerId);
+  void unregisterHandler(Looper::handler_id handler_id);
 
  private:
   struct HandlerInfo {
-    std::weak_ptr<Looper> mLooper;
-    std::weak_ptr<Handler> mHandler;
+    std::weak_ptr<Looper> looper_;
+    std::weak_ptr<Handler> handler_;
   };
 
-  std::mutex mMutex;
-  std::unordered_map<Looper::handler_id, HandlerInfo> mHandlers;
+  std::mutex mutex_;
+  std::unordered_map<Looper::handler_id, HandlerInfo> handlers_;
 
-  Looper::handler_id mNextHandlerId;
+  Looper::handler_id next_handler_id_;
 
   AVP_DISALLOW_COPY_AND_ASSIGN(HandlerRoster);
 };

@@ -16,21 +16,21 @@
 
 namespace avp {
 
-HandlerRoster::HandlerRoster() : mNextHandlerId(1) {}
+HandlerRoster::HandlerRoster() : next_handler_id_(1) {}
 
 Looper::handler_id HandlerRoster::registerHandler(
     const std::shared_ptr<Looper> looper,
     const std::shared_ptr<Handler> handler) {
-  std::lock_guard<std::mutex> guard(mMutex);
+  std::lock_guard<std::mutex> guard(mutex_);
   if (handler->id() != 0) {
     return -1;
   }
 
   HandlerInfo info;
-  info.mLooper = looper;
-  info.mHandler = handler;
-  Looper::handler_id handlerId = mNextHandlerId++;
-  mHandlers.emplace(std::make_pair(handlerId, info));
+  info.looper_ = looper;
+  info.handler_ = handler;
+  Looper::handler_id handlerId = next_handler_id_++;
+  handlers_.emplace(std::make_pair(handlerId, info));
 
   handler->setId(handlerId, looper);
 
@@ -38,17 +38,17 @@ Looper::handler_id HandlerRoster::registerHandler(
 }
 
 void HandlerRoster::unregisterHandler(Looper::handler_id handlerId) {
-  std::lock_guard<std::mutex> guard(mMutex);
+  std::lock_guard<std::mutex> guard(mutex_);
 
-  auto it = mHandlers.find(handlerId);
-  if (it != mHandlers.end()) {
+  auto it = handlers_.find(handlerId);
+  if (it != handlers_.end()) {
     HandlerInfo info = it->second;
-    std::shared_ptr<Handler> handler = info.mHandler.lock();
+    std::shared_ptr<Handler> handler = info.handler_.lock();
     if (handler.get() != nullptr) {
       handler->setId(0, std::weak_ptr<Looper>());
     }
 
-    mHandlers.erase(it);
+    handlers_.erase(it);
   }
 }
 

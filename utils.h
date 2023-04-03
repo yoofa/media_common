@@ -31,9 +31,9 @@ status_t convertMessageToMetaData(const std::shared_ptr<Message>& format,
 const uint8_t* findNextNalStartCode(const uint8_t* data, size_t length);
 
 struct HLSTime {
-  int32_t mSeq;
-  int64_t mTimeUs;
-  std::shared_ptr<Message> mMeta;
+  int32_t seq_;
+  int64_t time_us_;
+  std::shared_ptr<Message> meta_;
 
   explicit HLSTime(const std::shared_ptr<Message>& meta = NULL);
   int64_t getSegmentTimeUs() const;

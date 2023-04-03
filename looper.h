@@ -40,7 +40,7 @@ class Looper : public std::enable_shared_from_this<Looper> {
 
   int32_t start(int32_t priority = 0);
   int32_t stop();
-  void post(const std::shared_ptr<Message>& message, const int64_t delayUs);
+  void post(const std::shared_ptr<Message>& message, const int64_t delay_us);
 
   static int64_t getNowUs() {
     auto systemClock = std::chrono::system_clock::now();
@@ -53,31 +53,31 @@ class Looper : public std::enable_shared_from_this<Looper> {
   friend class Message;
 
   struct Event {
-    int64_t mWhenUs;
-    std::shared_ptr<Message> mMessage;
+    int64_t when_us_;
+    std::shared_ptr<Message> message_;
   };
 
   struct EventOrder {
     bool operator()(const std::unique_ptr<Event>& first,
                     const std::unique_ptr<Event>& second) const {
-      return first->mWhenUs > second->mWhenUs;
+      return first->when_us_ > second->when_us_;
     }
   };
 
-  std::string mName;
-  int32_t mPriority;
-  std::unique_ptr<std::thread> mThread;
-  bool mLooping;
-  CountDownLatch mStartLatch;
-  bool mStoped;
-  std::mutex mMutex;
-  std::condition_variable mCondition;
+  std::string name_;
+  int32_t priority_;
+  std::unique_ptr<std::thread> thread_;
+  bool looping_;
+  CountDownLatch start_latch_;
+  bool stopped_;
+  std::mutex mutex_;
+  std::condition_variable condition_;
   std::priority_queue<std::unique_ptr<Event>,
                       std::vector<std::unique_ptr<Event>>,
                       EventOrder>
-      mEventQueue;
+      event_queue_;
 
-  std::condition_variable mRepliesCondition;
+  std::condition_variable replies_condition_;
 
   void loop();
   bool keepRunning();

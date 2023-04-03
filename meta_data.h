@@ -360,7 +360,7 @@ class MetaData {
   struct typed_data;
   struct Rect;
   struct MetaDataInternal;
-  MetaDataInternal* mInternalData;
+  MetaDataInternal* internal_data_;
 };
 } /* namespace avp */
 

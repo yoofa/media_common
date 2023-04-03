@@ -14,20 +14,20 @@
 
 namespace avp {
 Buffer::Buffer(size_t capacity)
-    : mData(malloc(capacity)),
-      mCapacity(capacity),
-      mRangeOffset(0),
-      mRangeLength(capacity),
-      mInt32Data(0),
-      mOwnsData(true) {}
+    : data_(malloc(capacity)),
+      capacity_(capacity),
+      range_offset_(0),
+      range_length_(capacity),
+      int32_data_(0),
+      owns_data_(true) {}
 
 Buffer::Buffer(void* data, size_t capacity)
-    : mData(data),
-      mCapacity(capacity),
-      mRangeOffset(0),
-      mRangeLength(capacity),
-      mInt32Data(0),
-      mOwnsData(false) {}
+    : data_(data),
+      capacity_(capacity),
+      range_offset_(0),
+      range_length_(capacity),
+      int32_data_(0),
+      owns_data_(false) {}
 
 // static
 std::shared_ptr<Buffer> Buffer::CreateAsCopy(const void* data,
@@ -38,27 +38,27 @@ std::shared_ptr<Buffer> Buffer::CreateAsCopy(const void* data,
 }
 
 Buffer::~Buffer() {
-  if (mOwnsData) {
-    if (mData != NULL) {
-      free(mData);
-      mData = NULL;
+  if (owns_data_) {
+    if (data_ != NULL) {
+      free(data_);
+      data_ = NULL;
     }
   }
 }
 
 void Buffer::setRange(size_t offset, size_t size) {
-  CHECK_LE(offset, mCapacity);
-  CHECK_LE(offset + size, mCapacity);
+  CHECK_LE(offset, capacity_);
+  CHECK_LE(offset + size, capacity_);
 
-  mRangeOffset = offset;
-  mRangeLength = size;
+  range_offset_ = offset;
+  range_length_ = size;
 }
 
 std::shared_ptr<Message> Buffer::meta() {
-  if (mMeta.get() == nullptr) {
-    mMeta = std::make_shared<Message>();
+  if (meta_.get() == nullptr) {
+    meta_ = std::make_shared<Message>();
   }
-  return mMeta;
+  return meta_;
 }
 
 } /* namespace avp */
