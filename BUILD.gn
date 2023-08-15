@@ -38,6 +38,12 @@ static_library("foundation") {
     "utils.h",
   ]
 
+  sources += [
+    "./codec_id.h",
+    "./video_codec_property.cc",
+    "./video_codec_property.h",
+  ]
+
   deps = [
     "//base",
     "//base:byte_utils",
