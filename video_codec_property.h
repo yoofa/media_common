@@ -83,12 +83,12 @@ class VideoCodecProperty {
  public:
   VideoCodecProperty();
 
-  CodecId codec_type;
+  CodecId codec_id;
 
   VideoCodecMode mode;
 
-  int width;
-  int height;
+  size_t width;
+  size_t height;
 
   // bit rate in kbps
   uint32_t bit_rate;
@@ -116,6 +116,8 @@ class VideoCodecProperty {
  private:
   CodecSpecific specific_data_;
 };
+
+const char* CodecName(CodecId type);
 }  // namespace avp
 
 #endif /* !VIDEO_CODEC_PROPERTY_H */
