@@ -10,6 +10,8 @@ static_library("foundation") {
     "bit_reader.h",
     "buffer.cc",
     "buffer.h",
+    "channel_layout.cc",
+    "channel_layout.h",
     "codec_constants.h",
     "color_utils.cc",
     "color_utils.h",
