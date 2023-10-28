@@ -30,6 +30,8 @@ static_library("foundation") {
     "media_defs.cc",
     "media_defs.h",
     "media_source.h",
+    "media_utils.cc",
+    "media_utils.h",
     "message.cc",
     "message.h",
     "meta_data.cc",
@@ -41,9 +43,11 @@ static_library("foundation") {
   ]
 
   sources += [
-    "./codec_id.h",
-    "./video_codec_property.cc",
-    "./video_codec_property.h",
+    "audio_codec_property.cc",
+    "audio_codec_property.h",
+    "codec_id.h",
+    "video_codec_property.cc",
+    "video_codec_property.h",
   ]
 
   deps = [
