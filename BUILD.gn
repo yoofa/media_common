@@ -43,6 +43,12 @@ static_library("foundation") {
   ]
 
   sources += [
+    "media_packet.cc",
+    "media_packet.h",
+    "pixel_format.h",
+  ]
+
+  sources += [
     "audio_codec_property.cc",
     "audio_codec_property.h",
     "codec_id.h",
@@ -64,4 +70,22 @@ static_library("foundation") {
   ]
 
   defines = [ "STRINGIFY_ENUMS" ]
+}
+
+source_set("media_packet_unittest") {
+  testonly = true
+  sources = [ "test/media_packet_unittest.cc" ]
+  deps = [
+    ":foundation",
+    "//test:test_support",
+  ]
+}
+
+executable("media_foundation_unittests") {
+  testonly = true
+  deps = [
+    ":media_packet_unittest",
+    "//test:test_main",
+    "//test:test_support",
+  ]
 }
