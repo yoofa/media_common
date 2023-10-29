@@ -70,6 +70,7 @@ void MediaPacket::SetMediaType(MediaType type) {
 
 void MediaPacket::SetSize(size_t size) {
   DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
+  DCHECK(size > 0);
   data_->SetSize(size);
   size_ = data_->size();
 }
