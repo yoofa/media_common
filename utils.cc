@@ -949,20 +949,21 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       msg->setInt32("rotation-degrees", rotationDegrees);
     }
 
-    uint32_t type;
-    const void* data;
-    size_t size;
-    if (meta->findData(kKeyHdrStaticInfo, &type, &data, &size) &&
-        type == 'hdrS' && size == sizeof(HDRStaticInfo)) {
-      ColorUtils::setHDRStaticInfoIntoFormat(*(HDRStaticInfo*)data, msg);
+    uint32_t hdr_type;
+    const void* hdr_data;
+    size_t hdr_size;
+    if (meta->findData(kKeyHdrStaticInfo, &hdr_type, &hdr_data, &hdr_size) &&
+        hdr_type == 'hdrS' && hdr_size == sizeof(HDRStaticInfo)) {
+      ColorUtils::setHDRStaticInfoIntoFormat(*(HDRStaticInfo*)hdr_data, msg);
     }
 
-    if (meta->findData(kKeyHdr10PlusInfo, &type, &data, &size) && size > 0) {
-      auto buffer = std::make_shared<Buffer>(size);
+    if (meta->findData(kKeyHdr10PlusInfo, &hdr_type, &hdr_data, &hdr_size) &&
+        hdr_size > 0) {
+      auto buffer = std::make_shared<Buffer>(hdr_size);
       if (buffer.get() == nullptr || buffer->base() == nullptr) {
         return NO_MEMORY;
       }
-      memcpy(buffer->data(), data, size);
+      memcpy(buffer->data(), hdr_data, hdr_size);
       msg->setBuffer("hdr10-plus-info", buffer);
     }
 
@@ -1424,7 +1425,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       meta->findData(kKeyDVWC, &type, &data, &size)) {
     std::shared_ptr<Buffer> buffer, csdOrg;
     if (msg->findBuffer("csd-0", csdOrg)) {
-      auto buffer = std::make_shared<Buffer>(size + csdOrg->size());
+      buffer = std::make_shared<Buffer>(size + csdOrg->size());
       if (buffer.get() == nullptr || buffer->base() == nullptr) {
         return NO_MEMORY;
       }
@@ -1432,7 +1433,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       memcpy(buffer->data(), csdOrg->data(), csdOrg->size());
       memcpy(buffer->data() + csdOrg->size(), data, size);
     } else {
-      auto buffer = std::make_shared<Buffer>(size);
+      buffer = std::make_shared<Buffer>(size);
       if (buffer.get() == nullptr || buffer->base() == nullptr) {
         return NO_MEMORY;
       }
@@ -1452,7 +1453,6 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
   format = msg;
 
-  return OK;
   return OK;
 }
 status_t convertMetaDataToMessage(const std::shared_ptr<MetaData>& meta,
