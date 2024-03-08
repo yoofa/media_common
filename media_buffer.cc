@@ -9,7 +9,7 @@
 
 #include "common/buffer.h"
 
-namespace avp {
+namespace ave {
 
 MediaBuffer::MediaBuffer(std::shared_ptr<Message> meta,
                          std::shared_ptr<Buffer> buffer)
@@ -47,4 +47,4 @@ void MediaBuffer::setMeta(std::shared_ptr<Message> meta) {
   meta_ = std::move(meta);
 }
 
-}  // namespace avp
+}  // namespace ave

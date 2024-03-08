@@ -9,7 +9,7 @@
 
 #include "base/checks.h"
 
-namespace avp {
+namespace ave {
 
 namespace {
 constexpr char kPayloadNameVp8[] = "VP8";
@@ -32,42 +32,42 @@ VideoCodecProperty::VideoCodecProperty()
       qp_range({0, 0}) {}
 
 H264Specific* VideoCodecProperty::H264() {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_H264);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_H264);
   return std::get_if<H264Specific>(&specific_data_);
 }
 
 const H264Specific& VideoCodecProperty::H264() const {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_H264);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_H264);
   return std::get<H264Specific>(specific_data_);
 }
 
 H265Specific* VideoCodecProperty::H265() {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_H265);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_H265);
   return std::get_if<H265Specific>(&specific_data_);
 }
 
 const H265Specific& VideoCodecProperty::H265() const {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_H265);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_H265);
   return std::get<H265Specific>(specific_data_);
 }
 
 VP8Specific* VideoCodecProperty::VP8() {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_VP8);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_VP8);
   return std::get_if<VP8Specific>(&specific_data_);
 }
 
 const VP8Specific& VideoCodecProperty::VP8() const {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_VP8);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_VP8);
   return std::get<VP8Specific>(specific_data_);
 }
 
 VP9Specific* VideoCodecProperty::VP9() {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_VP9);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_VP9);
   return std::get_if<VP9Specific>(&specific_data_);
 }
 
 const VP9Specific& VideoCodecProperty::VP9() const {
-  DCHECK(codec_id == CodecId::AV_CODEC_ID_VP9);
+  AVE_DCHECK(codec_id == CodecId::AV_CODEC_ID_VP9);
   return std::get<VP9Specific>(specific_data_);
 }
 
@@ -88,4 +88,4 @@ const char* CodecName(CodecId type) {
   }
 }
 
-}  // namespace avp
+}  // namespace ave

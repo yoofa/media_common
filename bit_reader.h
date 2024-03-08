@@ -11,7 +11,7 @@
 #include "base/constructor_magic.h"
 #include "base/types.h"
 
-namespace avp {
+namespace ave {
 
 class BitReader {
  public:
@@ -59,7 +59,7 @@ class BitReader {
 
   virtual bool fillReservoir();
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(BitReader);
+  AVE_DISALLOW_COPY_AND_ASSIGN(BitReader);
 };
 
 class NALBitReader : public BitReader {
@@ -73,8 +73,8 @@ class NALBitReader : public BitReader {
 
   virtual bool fillReservoir();
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(NALBitReader);
+  AVE_DISALLOW_COPY_AND_ASSIGN(NALBitReader);
 };
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !BIT_READER_H */

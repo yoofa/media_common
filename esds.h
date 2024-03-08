@@ -10,7 +10,7 @@
 
 #include "common/media_errors.h"
 
-namespace avp {
+namespace ave {
 
 class ESDS {
  public:
@@ -57,6 +57,6 @@ class ESDS {
   ESDS(const ESDS&);
   ESDS& operator=(const ESDS&);
 };
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !ESDS_H */

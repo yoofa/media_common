@@ -16,7 +16,7 @@
 #include "base/types.h"
 #include "common/buffer.h"
 
-namespace avp {
+namespace ave {
 
 enum {
   kHevcNalUnitTypeCodedSliceIdr = 19,
@@ -100,8 +100,8 @@ class HevcParameterSets {
   std::vector<std::shared_ptr<Buffer>> mNalUnits;
   Info mInfo;
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(HevcParameterSets);
+  AVE_DISALLOW_COPY_AND_ASSIGN(HevcParameterSets);
 };
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !HEVC_UTILS_H */

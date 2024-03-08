@@ -14,7 +14,7 @@
 #include "base/types.h"
 #include "common/message.h"
 
-namespace avp {
+namespace ave {
 
 class Buffer {
  public:
@@ -46,9 +46,9 @@ class Buffer {
   int32_t int32_data_;
   bool owns_data_;
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(Buffer);
+  AVE_DISALLOW_COPY_AND_ASSIGN(Buffer);
 };
 
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !BUFFER_H */

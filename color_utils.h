@@ -12,7 +12,7 @@
 #include "common/media/hardware/video_api.h"
 #include "common/message.h"
 
-namespace avp {
+namespace ave {
 
 struct ColorUtils {
   /*
@@ -223,9 +223,9 @@ struct ColorUtils {
   static bool isHDRStaticInfoValid(HDRStaticInfo* info);
 };
 
-inline static const char* asString(avp::ColorUtils::ColorStandard i,
+inline static const char* asString(ave::ColorUtils::ColorStandard i,
                                    const char* def = "??") {
-  using namespace avp;
+  using namespace ave;
   switch (i) {
     case ColorUtils::kColorStandardUnspecified:
       return "Unspecified";
@@ -254,9 +254,9 @@ inline static const char* asString(avp::ColorUtils::ColorStandard i,
   }
 }
 
-inline static const char* asString(avp::ColorUtils::ColorTransfer i,
+inline static const char* asString(ave::ColorUtils::ColorTransfer i,
                                    const char* def = "??") {
-  using namespace avp;
+  using namespace ave;
   switch (i) {
     case ColorUtils::kColorTransferUnspecified:
       return "Unspecified";
@@ -281,9 +281,9 @@ inline static const char* asString(avp::ColorUtils::ColorTransfer i,
   }
 }
 
-inline static const char* asString(avp::ColorUtils::ColorRange i,
+inline static const char* asString(ave::ColorUtils::ColorRange i,
                                    const char* def = "??") {
-  using namespace avp;
+  using namespace ave;
   switch (i) {
     case ColorUtils::kColorRangeUnspecified:
       return "Unspecified";
@@ -295,6 +295,6 @@ inline static const char* asString(avp::ColorUtils::ColorRange i,
       return def;
   }
 }
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !COLOR_UTILS_H */

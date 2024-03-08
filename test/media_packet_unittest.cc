@@ -11,7 +11,7 @@
 #include "../media_packet.h"
 #include "third_party/googletest/src/googletest/include/gtest/gtest.h"
 
-namespace avp {
+namespace ave {
 
 namespace {
 const size_t kSampleCount = 10;
@@ -156,4 +156,4 @@ TEST(MediaPacketTest, VideoInfoCopyTest) {
   EXPECT_EQ(copy_packet_info->qp, DefaultVideoQP);
 }
 
-}  // namespace avp
+}  // namespace ave

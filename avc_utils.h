@@ -11,7 +11,7 @@
 #include "base/types.h"
 #include "common/buffer.h"
 
-namespace avp {
+namespace ave {
 
 #define NELEM(x) ((int)(sizeof(x) / sizeof((x)[0])))
 
@@ -104,6 +104,6 @@ bool GetMPEGAudioFrameSize(uint32_t header,
                            int* out_channels = NULL,
                            int* out_bitrate = NULL,
                            int* out_num_samples = NULL);
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !AVC_UTILS_H */

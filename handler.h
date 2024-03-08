@@ -5,15 +5,15 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#ifndef AVP_HANDLER_H
-#define AVP_HANDLER_H
+#ifndef AVE_HANDLER_H
+#define AVE_HANDLER_H
 
 #include <memory>
 
 #include "base/constructor_magic.h"
 #include "looper.h"
 
-namespace avp {
+namespace ave {
 
 class Message;
 
@@ -48,9 +48,9 @@ class Handler : public std::enable_shared_from_this<Handler> {
 
   void deliverMessage(const std::shared_ptr<Message>& message);
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(Handler);
+  AVE_DISALLOW_COPY_AND_ASSIGN(Handler);
 };
 
-}  // namespace avp
+}  // namespace ave
 
-#endif /* !AVP_HANDLER_H */
+#endif /* !AVE_HANDLER_H */

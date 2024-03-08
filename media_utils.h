@@ -13,7 +13,7 @@
 #include "codec_id.h"
 #include "pixel_format.h"
 
-namespace avp {
+namespace ave {
 
 enum class MediaType {
   UNKNOWN = -1,  ///< Usually treated as MEDIA_TYPE_DATA
@@ -64,5 +64,5 @@ struct VideoSampleInfo {
   int16_t qp = -1;
 };
 
-}  // namespace avp
+}  // namespace ave
 #endif /* !MEDIA_UTILS_H */

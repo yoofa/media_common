@@ -5,13 +5,13 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#ifndef AVP_MEDIA_BUFFER_H
-#define AVP_MEDIA_BUFFER_H
+#ifndef AVE_MEDIA_BUFFER_H
+#define AVE_MEDIA_BUFFER_H
 
 #include "buffer.h"
 #include "message.h"
 
-namespace avp {
+namespace ave {
 class MediaBuffer {
  public:
   MediaBuffer(std::shared_ptr<Message> meta, std::shared_ptr<Buffer> buffer);
@@ -31,6 +31,6 @@ class MediaBuffer {
   std::shared_ptr<Message> meta_;
   std::shared_ptr<Buffer> buffer_;
 };
-}  // namespace avp
+}  // namespace ave
 
-#endif /* !AVP_MEDIA_BUFFER_H */
+#endif /* !AVE_MEDIA_BUFFER_H */

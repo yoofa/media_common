@@ -5,8 +5,8 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#ifndef AVP_LOOPER_H
-#define AVP_LOOPER_H
+#ifndef AVE_LOOPER_H
+#define AVE_LOOPER_H
 
 #include <chrono>
 #include <condition_variable>
@@ -20,7 +20,7 @@
 #include "base/count_down_latch.h"
 #include "base/errors.h"
 
-namespace avp {
+namespace ave {
 
 class Message;
 class Handler;
@@ -68,7 +68,7 @@ class Looper : public std::enable_shared_from_this<Looper> {
   int32_t priority_;
   std::unique_ptr<std::thread> thread_;
   bool looping_;
-  CountDownLatch start_latch_;
+  base::CountDownLatch start_latch_;
   bool stopped_;
   std::mutex mutex_;
   std::condition_variable condition_;
@@ -90,9 +90,9 @@ class Looper : public std::enable_shared_from_this<Looper> {
   status_t postReply(const std::shared_ptr<ReplyToken>& replyToken,
                      const std::shared_ptr<Message>& reply);
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(Looper);
+  AVE_DISALLOW_COPY_AND_ASSIGN(Looper);
 };
 
-}  // namespace avp
+}  // namespace ave
 
-#endif /* !AVP_LOOPER_H */
+#endif /* !AVE_LOOPER_H */

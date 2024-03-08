@@ -12,7 +12,7 @@
 
 #include "common/message.h"
 
-namespace avp {
+namespace ave {
 
 // The following keys map to int32_t data unless indicated otherwise.
 enum {
@@ -362,6 +362,6 @@ class MetaData {
   struct MetaDataInternal;
   MetaDataInternal* internal_data_;
 };
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !META_DATA_H */

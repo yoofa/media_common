@@ -12,7 +12,7 @@
 #include "common/Lookup.h"
 #include "common/buffer.h"
 
-namespace avp {
+namespace ave {
 
 // shortcut names for brevity in the following tables
 typedef ColorAspects CA;
@@ -145,7 +145,7 @@ int32_t ColorUtils::wrapColorAspectsIntoColorRange(ColorAspects::Range range) {
   } else if (!isValid(range)) {
     return kColorRangeUnspecified;
   } else {
-    CHECK(!isDefined(range));
+    AVE_CHECK(!isDefined(range));
     // all platform values are in sRanges
     return kColorRangeVendorStart + range;
   }
@@ -306,15 +306,15 @@ void ColorUtils::convertCodecColorAspectsToIsoAspects(
     bool* fullRange) {
   if (aspects.mPrimaries == ColorAspects::PrimariesOther ||
       !sIsoPrimaries.map(aspects.mPrimaries, primaries)) {
-    CHECK(sIsoPrimaries.map(ColorAspects::PrimariesUnspecified, primaries));
+    AVE_CHECK(sIsoPrimaries.map(ColorAspects::PrimariesUnspecified, primaries));
   }
   if (aspects.mTransfer == ColorAspects::TransferOther ||
       !sIsoTransfers.map(aspects.mTransfer, transfer)) {
-    CHECK(sIsoTransfers.map(ColorAspects::TransferUnspecified, transfer));
+    AVE_CHECK(sIsoTransfers.map(ColorAspects::TransferUnspecified, transfer));
   }
   if (aspects.mMatrixCoeffs == ColorAspects::MatrixOther ||
       !sIsoMatrixCoeffs.map(aspects.mMatrixCoeffs, coeffs)) {
-    CHECK(sIsoMatrixCoeffs.map(ColorAspects::MatrixUnspecified, coeffs));
+    AVE_CHECK(sIsoMatrixCoeffs.map(ColorAspects::MatrixUnspecified, coeffs));
   }
   *fullRange = aspects.mRange == ColorAspects::RangeFull;
 }
@@ -703,7 +703,7 @@ void ColorUtils::getColorAspectsFromFormat(
 
   if (convertPlatformColorAspectsToCodecAspects(range, standard, transfer,
                                                 aspects) != OK) {
-    LOG(LS_WARNING) << "Ignoring illegal color aspects(R:" << range << "("
+    AVE_LOG(LS_WARNING) << "Ignoring illegal color aspects(R:" << range << "("
                     << asString((ColorRange)range) << "), S:" << standard << "("
                     << asString((ColorStandard)standard) << "), T:" << transfer
                     << "(" << asString((ColorTransfer)transfer) << "))";
@@ -711,7 +711,7 @@ void ColorUtils::getColorAspectsFromFormat(
     // not changed For encoders, we leave these as is. For decoders, we will use
     // default values.
   }
-  LOG(LS_VERBOSE) << "Got color aspects (R:" << aspects.mRange << "("
+  AVE_LOG(LS_VERBOSE) << "Got color aspects (R:" << aspects.mRange << "("
                   << asString(aspects.mRange) << "), P:" << aspects.mPrimaries
                   << "(" << asString(aspects.mPrimaries)
                   << "), M:" << aspects.mMatrixCoeffs << "("
@@ -743,7 +743,7 @@ void ColorUtils::setColorAspectsIntoFormat(const ColorAspects& aspects,
   if (transfer != 0 || force) {
     format->setInt32("color-transfer", transfer);
   }
-  LOG(LS_VERBOSE) << "setting color aspects (R:" << aspects.mRange << "("
+  AVE_LOG(LS_VERBOSE) << "setting color aspects (R:" << aspects.mRange << "("
                   << asString(aspects.mRange) << "), P:" << aspects.mPrimaries
                   << "(" << asString(aspects.mPrimaries)
                   << "), M:" << aspects.mMatrixCoeffs << "("
@@ -831,14 +831,14 @@ bool ColorUtils::getHDRStaticInfoFromFormat(
 
   // TODO: Make this more flexible when adding more members to HDRStaticInfo
   if (buf->size() != 25 /* static Metadata Type 1 size */) {
-    LOG(LS_WARNING) << "Ignore invalid HDRStaticInfo with size: "
+    AVE_LOG(LS_WARNING) << "Ignore invalid HDRStaticInfo with size: "
                     << buf->size();
     return false;
   }
 
   const uint8_t* data = buf->data();
   if (*data != HDRStaticInfo::kType1) {
-    LOG(LS_WARNING) << "Unsupported static Metadata Type " << *data;
+    AVE_LOG(LS_WARNING) << "Unsupported static Metadata Type " << *data;
     return false;
   }
 
@@ -856,7 +856,7 @@ bool ColorUtils::getHDRStaticInfoFromFormat(
   info->sType1.mMaxContentLightLevel = U16LE_AT(&data[21]);
   info->sType1.mMaxFrameAverageLightLevel = U16LE_AT(&data[23]);
 
-  LOG(LS_VERBOSE) << "Got HDRStaticInfo from config (R: " << info->sType1.mR.x
+  AVE_LOG(LS_VERBOSE) << "Got HDRStaticInfo from config (R: " << info->sType1.mR.x
                   << " " << info->sType1.mR.y << ", G: " << info->sType1.mG.x
                   << " " << info->sType1.mG.y << ", B: " << info->sType1.mB.x
                   << " " << info->sType1.mB.y << ", W: " << info->sType1.mW.x
@@ -881,4 +881,4 @@ bool ColorUtils::isHDRStaticInfoValid(HDRStaticInfo* info) {
   return false;
 }
 
-} /* namespace avp */
+} /* namespace ave */

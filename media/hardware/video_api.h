@@ -15,7 +15,7 @@
 
 #include "base/types.h"
 
-namespace avp {
+namespace ave {
 
 /**
  * Structure describing a media image (frame)
@@ -409,5 +409,5 @@ inline static const char* asString(ColorAspects::Standard i,
   }
 }
 #endif
-} /* namespace avp */
+} /* namespace ave */
 #endif /* !VIDEO_API_H */

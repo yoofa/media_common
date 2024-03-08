@@ -18,7 +18,7 @@
 #include "handler_roster.h"
 #include "message.h"
 
-namespace avp {
+namespace ave {
 
 HandlerRoster gRoster;
 
@@ -137,7 +137,7 @@ std::shared_ptr<ReplyToken> Looper::createReplyToken() {
 status_t Looper::awaitResponse(const std::shared_ptr<ReplyToken>& replyToken,
                                std::shared_ptr<Message>& response) {
   std::unique_lock<std::mutex> guard(mutex_);
-  // CHECK(replyToken != NULL)
+  // AVE_CHECK(replyToken != NULL)
   while (!replyToken->getReply(response)) {
     replies_condition_.wait(guard);
   }
@@ -155,4 +155,4 @@ status_t Looper::postReply(const std::shared_ptr<ReplyToken>& replyToken,
   return err;
 }
 
-}  // namespace avp
+}  // namespace ave

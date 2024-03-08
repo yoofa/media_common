@@ -13,14 +13,14 @@
 #include "handler.h"
 #include "looper.h"
 
-namespace avp {
+namespace ave {
 
 status_t ReplyToken::setReply(const std::shared_ptr<Message>& reply) {
   if (replied_) {
     return -1;
   }
   std::cout << "setReply" << std::endl;
-  // CHECK(reply_ == nullptr);
+  // AVE_CHECK(reply_ == nullptr);
   reply_ = reply;
   replied_ = true;
   return 0;
@@ -156,7 +156,7 @@ bool Message::contains(const char* name) const {
   }                                                                   \
                                                                       \
   bool Message::find##NAME(const char* name, TYPENAME* value) const { \
-    std::shared_ptr<avp::Message::Item> item;                         \
+    std::shared_ptr<ave::Message::Item> item;                         \
     item = findItem(name, Message::kType##NAME);                      \
     if (item) {                                                       \
       *value = std::get<TYPENAME>(item->value);                       \
@@ -263,18 +263,18 @@ bool Message::findReplyToken(const char* name,
 }
 
 void Message::setBuffer(const char* name,
-                        const std::shared_ptr<avp::Buffer> buffer) {
+                        const std::shared_ptr<ave::Buffer> buffer) {
   std::shared_ptr<Message::Item> item = allocateItem(name);
   item->mType = kTypeBuffer;
   item->value = std::move(buffer);
 }
 
 bool Message::findBuffer(const char* name,
-                         std::shared_ptr<avp::Buffer>& buffer) const {
+                         std::shared_ptr<ave::Buffer>& buffer) const {
   std::shared_ptr<Message::Item> item;
   item = findItem(name, kTypeBuffer);
   if (item) {
-    auto result = std::get<std::shared_ptr<avp::Buffer>>(item->value);
+    auto result = std::get<std::shared_ptr<ave::Buffer>>(item->value);
     buffer = std::move(result);
     return true;
   }
@@ -282,18 +282,18 @@ bool Message::findBuffer(const char* name,
 }
 
 void Message::setObject(const char* name,
-                        const std::shared_ptr<avp::MessageObject> obj) {
+                        const std::shared_ptr<ave::MessageObject> obj) {
   std::shared_ptr<Message::Item> item = allocateItem(name);
   item->mType = kTypeObject;
   item->value = std::move(obj);
 }
 
 bool Message::findObject(const char* name,
-                         std::shared_ptr<avp::MessageObject>& obj) const {
+                         std::shared_ptr<ave::MessageObject>& obj) const {
   std::shared_ptr<Message::Item> item;
   item = findItem(name, kTypeObject);
   if (item) {
-    auto result = std::get<std::shared_ptr<avp::MessageObject>>(item->value);
+    auto result = std::get<std::shared_ptr<ave::MessageObject>>(item->value);
     obj = std::move(result);
     return true;
   }
@@ -314,4 +314,4 @@ void Message::deliver() {
   }
 }
 
-}  // namespace avp
+}  // namespace ave

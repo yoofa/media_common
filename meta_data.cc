@@ -14,7 +14,7 @@
 #include "base/checks.h"
 #include "base/logging.h"
 
-namespace avp {
+namespace ave {
 
 struct MetaData::typed_data {
   typed_data();
@@ -147,7 +147,7 @@ bool MetaData::findInt32(uint32_t key, int32_t* value) const {
     return false;
   }
 
-  CHECK_EQ(size, sizeof(*value));
+  AVE_CHECK_EQ(size, sizeof(*value));
 
   *value = *(int32_t*)data;
 
@@ -162,7 +162,7 @@ bool MetaData::findInt64(uint32_t key, int64_t* value) const {
     return false;
   }
 
-  CHECK_EQ(size, sizeof(*value));
+  AVE_CHECK_EQ(size, sizeof(*value));
 
   *value = *(int64_t*)data;
 
@@ -177,7 +177,7 @@ bool MetaData::findFloat(uint32_t key, float* value) const {
     return false;
   }
 
-  CHECK_EQ(size, sizeof(*value));
+  AVE_CHECK_EQ(size, sizeof(*value));
 
   *value = *(float*)data;
 
@@ -192,7 +192,7 @@ bool MetaData::findPointer(uint32_t key, void** value) const {
     return false;
   }
 
-  CHECK_EQ(size, sizeof(*value));
+  AVE_CHECK_EQ(size, sizeof(*value));
 
   *value = *(void**)data;
 
@@ -211,7 +211,7 @@ bool MetaData::findRect(uint32_t key,
     return false;
   }
 
-  CHECK_EQ(size, sizeof(Rect));
+  AVE_CHECK_EQ(size, sizeof(Rect));
 
   const Rect* r = (const Rect*)data;
   *left = r->mLeft;
@@ -329,7 +329,7 @@ void* MetaData::typed_data::allocateStorage(size_t size) {
 
   u.ext_data = malloc(mSize);
   if (u.ext_data == NULL) {
-    LOG(LS_ERROR) << "Couldn't allocate " << size << "bytes for item";
+    AVE_LOG(LS_ERROR) << "Couldn't allocate " << size << "bytes for item";
     mSize = 0;
   }
   return u.ext_data;
@@ -416,8 +416,8 @@ void MetaData::dumpToLog() const {
     char cc[5];
     MakeFourCCString(key, cc);
     const typed_data item = it.second;
-    LOG(LS_INFO) << cc << ": " << item.asString(true);
+    AVE_LOG(LS_INFO) << cc << ": " << item.asString(true);
   }
 }
 
-} /* namespace avp */
+} /* namespace ave */

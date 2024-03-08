@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-namespace avp {
+namespace ave {
 
 template <typename T, typename U>
 struct Lookup {
@@ -63,6 +63,6 @@ bool Lookup<T, U>::rlookup(const U& from, T* to) const {
   }
   return false;
 }
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !LOOKUP_H */

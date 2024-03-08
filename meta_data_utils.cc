@@ -16,7 +16,7 @@
 #include "common/media_defs.h"
 #include "common/utils.h"
 
-namespace avp {
+namespace ave {
 
 bool MakeAVCCodecSpecificData(MetaData& meta,
                               const uint8_t* data,
@@ -90,7 +90,7 @@ bool MakeAACCodecSpecificData(MetaData& meta,
   // adts_fixed_header
 
   if (bits.getBits(12) != 0xfffu) {
-    LOG(LS_INFO) << "Wrong atds_fixed_header";
+    AVE_LOG(LS_INFO) << "Wrong atds_fixed_header";
     return false;
   }
 
@@ -98,14 +98,14 @@ bool MakeAACCodecSpecificData(MetaData& meta,
 
   unsigned profile = bits.getBits(2);
   if (profile == 3u) {
-    LOG(LS_INFO) << "profile should not be 3";
+    AVE_LOG(LS_INFO) << "profile should not be 3";
     return false;
   }
   unsigned sampling_freq_index = bits.getBits(4);
   bits.getBits(1);  // private_bit
   unsigned channel_configuration = bits.getBits(3);
   if (channel_configuration == 0u) {
-    LOG(LS_INFO) << "channel_config should not be 0";
+    AVE_LOG(LS_INFO) << "channel_config should not be 0";
     return false;
   }
 
@@ -223,7 +223,7 @@ static void extractAlbumArt(AMediaFormat* fileMeta,
   size_t flacSize = inLen / 4 * 3;
   uint8_t* flac = new uint8_t[flacSize];
   if (!decodeBase64(flac, &flacSize, (const char*)data)) {
-    LOG(LS_INFO) << "malformed base64 encoded data.");
+    AVE_LOG(LS_INFO) << "malformed base64 encoded data.");
     delete[] flac;
     return;
   }
@@ -345,7 +345,7 @@ void parseVorbisComment(AMediaFormat* fileMeta,
         if (errno == 0) {
           meta->setInt32(fileMeta, kMap[j].mKey, hapticChannelCount);
         } else {
-          LOG(LS_INFO) << "Error(%d) when parsing haptic channel count", errno);
+          AVE_LOG(LS_INFO) << "Error(%d) when parsing haptic channel count", errno);
         }
       } else {
         meta->setString(fileMeta, kMap[j].mKey, &comment[tagLen + 1]);
@@ -354,4 +354,4 @@ void parseVorbisComment(AMediaFormat* fileMeta,
   }
 }
 */
-} /* namespace avp */
+} /* namespace ave */

@@ -5,8 +5,8 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#ifndef AVP_MESSAGE_H
-#define AVP_MESSAGE_H
+#ifndef AVE_MESSAGE_H
+#define AVE_MESSAGE_H
 
 #include <iostream>
 #include <memory>
@@ -18,7 +18,7 @@
 #include "base/errors.h"
 #include "looper.h"
 
-namespace avp {
+namespace ave {
 
 class Handler;
 class Buffer;
@@ -165,9 +165,9 @@ class Message : public std::enable_shared_from_this<Message> {
   std::shared_ptr<Item> findItem(const char* name, Type) const;
   void deliver();
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(Message);
+  AVE_DISALLOW_COPY_AND_ASSIGN(Message);
 };
 
-}  // namespace avp
+}  // namespace ave
 
-#endif /* !AVP_MESSAGE_H */
+#endif /* !AVE_MESSAGE_H */

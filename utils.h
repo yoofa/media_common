@@ -14,7 +14,7 @@
 #include "common/message.h"
 #include "common/meta_data.h"
 
-namespace avp {
+namespace ave {
 status_t convertMetaDataToMessage(const MetaData* meta,
                                   std::shared_ptr<Message>& format);
 
@@ -41,6 +41,6 @@ struct HLSTime {
 
 bool operator<(const HLSTime& t0, const HLSTime& t1);
 
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !UTILS_H */

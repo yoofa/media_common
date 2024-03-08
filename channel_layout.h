@@ -8,7 +8,7 @@
 #ifndef CHANNEL_LAYOUT_H
 #define CHANNEL_LAYOUT_H
 
-namespace avp {
+namespace ave {
 // This file is derived from Chromium's base/channel_layout.h.
 
 // Enumerates the various representations of the ordering of audio channels.
@@ -156,6 +156,6 @@ ChannelLayout GuessChannelLayout(int channels);
 // Returns a string representation of the channel layout.
 const char* ChannelLayoutToString(ChannelLayout layout);
 
-}  // namespace avp
+}  // namespace ave
 
 #endif /* !CHANNEL_LAYOUT_H */

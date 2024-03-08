@@ -9,7 +9,7 @@
 
 #include "base/checks.h"
 
-namespace avp {
+namespace ave {
 
 BitReader::BitReader(const uint8_t* data, size_t size)
     : mData(data),
@@ -42,7 +42,7 @@ bool BitReader::fillReservoir() {
 
 uint32_t BitReader::getBits(size_t n) {
   uint32_t ret;
-  CHECK(getBitsGraceful(n, &ret));
+  AVE_CHECK(getBitsGraceful(n, &ret));
   return ret;
 }
 
@@ -101,7 +101,7 @@ void BitReader::putBits(uint32_t x, size_t n) {
     return;
   }
 
-  CHECK_LE(n, 32u);
+  AVE_CHECK_LE(n, 32u);
 
   while (mNumBitsLeft + n > 32) {
     mNumBitsLeft -= 8;
@@ -187,4 +187,4 @@ bool NALBitReader::fillReservoir() {
   mReservoir <<= 32 - mNumBitsLeft;
   return true;
 }
-} /* namespace avp */
+} /* namespace ave */

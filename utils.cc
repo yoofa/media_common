@@ -36,7 +36,7 @@ namespace {
 constexpr static int32_t DolbyVisionLevelUnknown = 0;
 }  // namespace
 
-namespace avp {
+namespace ave {
 static status_t copyNALUToBuffer(std::shared_ptr<Buffer>& buffer,
                                  const uint8_t* ptr,
                                  size_t length) {
@@ -198,7 +198,7 @@ static void parseDolbyVisionProfileLevelFromDvcc(
   // dv_major.dv_minor Should be 1.0 or 2.1
   if (size != 24 ||
       ((ptr[0] != 1 || ptr[1] != 0) && (ptr[0] != 2 || ptr[1] != 1))) {
-    LOG(LS_VERBOSE) << "Size " << size << ", dv_major " << ptr[0]
+    AVE_LOG(LS_VERBOSE) << "Size " << size << ", dv_major " << ptr[0]
                     << ", dv_minor " << ptr[1];
     return;
   }
@@ -210,7 +210,7 @@ static void parseDolbyVisionProfileLevelFromDvcc(
   const uint8_t bl_present_flag = (ptr[3] & 0x01);
   const int32_t bl_compatibility_id = (int32_t)(ptr[4] >> 4);
 
-  LOG(LS_VERBOSE) << "profile-level-compatibility value in dv(c|v)c box "
+  AVE_LOG(LS_VERBOSE) << "profile-level-compatibility value in dv(c|v)c box "
                   << profile << "-" << level << "-" << bl_compatibility_id;
 
   // All Dolby Profiles will have profile and level info in MediaFormat
@@ -802,7 +802,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     format->clear();
   }
   if (meta == nullptr) {
-    LOG(LS_ERROR) << "convertMetaDataToMessage: nullptr input";
+    AVE_LOG(LS_ERROR) << "convertMetaDataToMessage: nullptr input";
     return BAD_VALUE;
   }
 
@@ -827,7 +827,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     auto buffer = Buffer::CreateAsCopy(ffExData, ffExsize);
     msg->setBuffer("ffmpeg-exdata", buffer);
     std::shared_ptr<Buffer> buf;
-    DCHECK(msg->findBuffer("ffmpeg-exdata", buf));
+    AVE_DCHECK(msg->findBuffer("ffmpeg-exdata", buf));
   }
 
   convertMetaDataToMessageFromMappings(meta, msg);
@@ -1071,7 +1071,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     const uint8_t* ptr = (const uint8_t*)data;
 
     if (size < 7 || ptr[0] != 1) {  // configurationVersion == 1
-      LOG(LS_ERROR) << "b/23680780";
+      AVE_LOG(LS_ERROR) << "b/23680780";
       return BAD_VALUE;
     }
 
@@ -1079,13 +1079,13 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
     // There is decodable content out there that fails the following
     // assertion, let's be lenient for now...
-    // CHECK((ptr[4] >> 2) == 0x3f);  // reserved
+    // AVE_CHECK((ptr[4] >> 2) == 0x3f);  // reserved
 
     // we can get lengthSize value from 1 + (ptr[4] & 3)
 
     // commented out check below as H264_QVGA_500_NO_AUDIO.3gp
     // violates it...
-    // CHECK((ptr[5] >> 5) == 7);  // reserved
+    // AVE_CHECK((ptr[5] >> 5) == 7);  // reserved
 
     size_t numSeqParameterSets = ptr[5] & 31;
 
@@ -1100,7 +1100,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
     for (size_t i = 0; i < numSeqParameterSets; ++i) {
       if (size < 2) {
-        LOG(LS_ERROR) << "b/23680780";
+        AVE_LOG(LS_ERROR) << "b/23680780";
         return BAD_VALUE;
       }
       size_t length = U16_AT(ptr);
@@ -1132,7 +1132,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     buffer->setRange(0, 0);
 
     if (size < 1) {
-      LOG(LS_ERROR) << "b/23680780";
+      AVE_LOG(LS_ERROR) << "b/23680780";
       return BAD_VALUE;
     }
     size_t numPictureParameterSets = *ptr;
@@ -1141,7 +1141,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
     for (size_t i = 0; i < numPictureParameterSets; ++i) {
       if (size < 2) {
-        LOG(LS_ERROR) << "b/23680780";
+        AVE_LOG(LS_ERROR) << "b/23680780";
         return BAD_VALUE;
       }
       size_t length = U16_AT(ptr);
@@ -1170,7 +1170,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     if (size < 23 || (ptr[0] != 1 && ptr[0] != 0)) {
       // configurationVersion == 1 or 0
       // 1 is what the standard dictates, but some old muxers may have used 0.
-      LOG(LS_ERROR) << "b/23680780";
+      AVE_LOG(LS_ERROR) << "b/23680780";
       return BAD_VALUE;
     }
 
@@ -1193,7 +1193,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
     for (i = 0; i < numofArrays; i++) {
       if (size < 3) {
-        LOG(LS_ERROR) << "b/23680780";
+        AVE_LOG(LS_ERROR) << "b/23680780";
         return BAD_VALUE;
       }
       ptr += 1;
@@ -1207,7 +1207,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
       for (j = 0; j < numofNals; j++) {
         if (size < 2) {
-          LOG(LS_ERROR) << "b/23680780";
+          AVE_LOG(LS_ERROR) << "b/23680780";
           return BAD_VALUE;
         }
         size_t length = U16_AT(ptr);
@@ -1244,7 +1244,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
         hvcc.findParam32(kTransferCharacteristics, &isoTransfer) &&
         hvcc.findParam32(kMatrixCoeffs, &isoMatrix) &&
         hvcc.findParam32(kVideoFullRangeFlag, &isoRange)) {
-      LOG(LS_VERBOSE) << "found iso color aspects : primaris=" << isoPrimaries
+      AVE_LOG(LS_VERBOSE) << "found iso color aspects : primaris=" << isoPrimaries
                       << ", transfer=" << isoTransfer
                       << ", matrix=" << isoMatrix << ", range=" << isoRange;
 
@@ -1255,7 +1255,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mPrimaries == ColorAspects::PrimariesUnspecified) {
         int32_t primaries;
         if (meta->findInt32(kKeyColorPrimaries, &primaries)) {
-          LOG(LS_VERBOSE) << "unspecified primaries found, replaced to "
+          AVE_LOG(LS_VERBOSE) << "unspecified primaries found, replaced to "
                           << primaries;
           aspects.mPrimaries = static_cast<ColorAspects::Primaries>(primaries);
         }
@@ -1263,7 +1263,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mTransfer == ColorAspects::TransferUnspecified) {
         int32_t transferFunction;
         if (meta->findInt32(kKeyTransferFunction, &transferFunction)) {
-          LOG(LS_VERBOSE) << "unspecified transfer found, replaced to "
+          AVE_LOG(LS_VERBOSE) << "unspecified transfer found, replaced to "
                           << transferFunction;
           aspects.mTransfer =
               static_cast<ColorAspects::Transfer>(transferFunction);
@@ -1272,7 +1272,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mMatrixCoeffs == ColorAspects::MatrixUnspecified) {
         int32_t colorMatrix;
         if (meta->findInt32(kKeyColorMatrix, &colorMatrix)) {
-          LOG(LS_VERBOSE) << "unspecified matrix found, replaced to "
+          AVE_LOG(LS_VERBOSE) << "unspecified matrix found, replaced to "
                           << colorMatrix;
           aspects.mMatrixCoeffs =
               static_cast<ColorAspects::MatrixCoeffs>(colorMatrix);
@@ -1281,7 +1281,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mRange == ColorAspects::RangeUnspecified) {
         int32_t range;
         if (meta->findInt32(kKeyColorRange, &range)) {
-          LOG(LS_VERBOSE) << "unspecified range found, replaced to " << range;
+          AVE_LOG(LS_VERBOSE) << "unspecified range found, replaced to " << range;
           aspects.mRange = static_cast<ColorAspects::Range>(range);
         }
       }
@@ -1406,7 +1406,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
 
     parseVp9ProfileLevelFromCsd(buffer, msg);
   } else if (meta->findData(kKeyAlacMagicCookie, &type, &data, &size)) {
-    LOG(LS_VERBOSE)
+    AVE_LOG(LS_VERBOSE)
         << "convertMetaDataToMessage found kKeyAlacMagicCookie of size "
         << size;
     auto buffer = std::make_shared<Buffer>(size);
@@ -1445,7 +1445,7 @@ status_t convertMetaDataToMessage(const MetaData* meta,
     msg->setBuffer("csd-0", buffer);
 
     const uint8_t* ptr = (const uint8_t*)data;
-    LOG(LS_VERBOSE)
+    AVE_LOG(LS_VERBOSE)
         << "DV: calling parseDolbyVisionProfileLevelFromDvcc with data size "
         << size;
     parseDolbyVisionProfileLevelFromDvcc(ptr, size, msg);
@@ -1465,4 +1465,4 @@ status_t convertMessageToMetaData(const std::shared_ptr<Message>& format,
   return OK;
 }
 
-} /* namespace avp */
+} /* namespace ave */

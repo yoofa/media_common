@@ -16,7 +16,7 @@
 
 #define UNUSED_PARAM __attribute__((unused))
 
-namespace avp {
+namespace ave {
 
 static const uint8_t kHevcNalUnitTypes[8] = {
     kHevcNalUnitTypeCodedSliceIdr, kHevcNalUnitTypeCodedSliceIdrNoLP,
@@ -29,7 +29,7 @@ HevcParameterSets::HevcParameterSets() : mInfo(kInfoNone) {}
 
 status_t HevcParameterSets::addNalUnit(const uint8_t* data, size_t size) {
   if (size < 1) {
-    LOG(LS_ERROR) << "empty NAL b/35467107";
+    AVE_LOG(LS_ERROR) << "empty NAL b/35467107";
     return ERROR_MALFORMED;
   }
   uint8_t nalUnitType = (data[0] >> 1) & 0x3f;
@@ -37,21 +37,21 @@ status_t HevcParameterSets::addNalUnit(const uint8_t* data, size_t size) {
   switch (nalUnitType) {
     case 32:  // VPS
       if (size < 2) {
-        LOG(LS_ERROR) << "invalid NAL/VPS size b/35467107";
+        AVE_LOG(LS_ERROR) << "invalid NAL/VPS size b/35467107";
         return ERROR_MALFORMED;
       }
       err = parseVps(data + 2, size - 2);
       break;
     case 33:  // SPS
       if (size < 2) {
-        LOG(LS_ERROR) << "invalid NAL/SPS size b/35467107";
+        AVE_LOG(LS_ERROR) << "invalid NAL/SPS size b/35467107";
         return ERROR_MALFORMED;
       }
       err = parseSps(data + 2, size - 2);
       break;
     case 34:  // PPS
       if (size < 2) {
-        LOG(LS_ERROR) << "invalid NAL/PPS size b/35467107";
+        AVE_LOG(LS_ERROR) << "invalid NAL/PPS size b/35467107";
         return ERROR_MALFORMED;
       }
       err = parsePps(data + 2, size - 2);
@@ -61,12 +61,12 @@ status_t HevcParameterSets::addNalUnit(const uint8_t* data, size_t size) {
       // Ignore
       break;
     default:
-      LOG(LS_ERROR) << "Unrecognized NAL unit type.";
+      AVE_LOG(LS_ERROR) << "Unrecognized NAL unit type.";
       return ERROR_MALFORMED;
   }
 
   if (err != OK) {
-    LOG(LS_ERROR) << "error parsing VPS or SPS or PPS";
+    AVE_LOG(LS_ERROR) << "error parsing VPS or SPS or PPS";
     return err;
   }
 
@@ -80,7 +80,7 @@ template <typename T>
 static bool findParam(uint32_t key,
                       T* param,
                       std::unordered_map<uint32_t, uint64_t>& params) {
-  CHECK(param);
+  AVE_CHECK(param);
   auto search = params.find(key);
 
   if (search == params.end()) {
@@ -118,20 +118,20 @@ size_t HevcParameterSets::getNumNalUnitsOfType(uint8_t type) {
 }
 
 uint8_t HevcParameterSets::getType(size_t index) {
-  CHECK_LT(index, mNalUnits.size());
+  AVE_CHECK_LT(index, mNalUnits.size());
   return mNalUnits[index]->int32Data();
 }
 
 size_t HevcParameterSets::getSize(size_t index) {
-  CHECK_LT(index, mNalUnits.size());
+  AVE_CHECK_LT(index, mNalUnits.size());
   return mNalUnits[index]->size();
 }
 
 bool HevcParameterSets::write(size_t index, uint8_t* dest, size_t size) {
-  CHECK_LT(index, mNalUnits.size());
+  AVE_CHECK_LT(index, mNalUnits.size());
   const std::shared_ptr<Buffer>& nalUnit = mNalUnits[index];
   if (size < nalUnit->size()) {
-    LOG(LS_ERROR) << "dest buffer size too small: " << size << " vs. "
+    AVE_LOG(LS_ERROR) << "dest buffer size too small: " << size << " vs. "
                   << nalUnit->size() << " to be written";
     return false;
   }
@@ -371,7 +371,7 @@ void HevcParameterSets::FindHEVCDimensions(
     const std::shared_ptr<Buffer>& SpsBuffer,
     int32_t* width,
     int32_t* height) {
-  LOG(LS_DEBUG) << "FindHEVCDimensions";
+  AVE_LOG(LS_DEBUG) << "FindHEVCDimensions";
   // See Rec. ITU-T H.265 v3 (04/2015) Chapter 7.3.2.2 for reference
   BitReader reader(SpsBuffer->data() + 1, SpsBuffer->size() - 1);
   // Skip sps_video_parameter_set_id
@@ -530,7 +530,7 @@ status_t HevcParameterSets::makeHvcc(uint8_t* hvcc,
       header += (2 + getSize(j));
     }
   }
-  CHECK_EQ(header - size, hvcc);
+  AVE_CHECK_EQ(header - size, hvcc);
 
   return OK;
 }
@@ -542,7 +542,7 @@ bool HevcParameterSets::IsHevcIDR(const uint8_t* data, size_t size) {
   while (!foundIDR &&
          getNextNALUnit(&data, &size, &nalStart, &nalSize, true) == OK) {
     if (nalSize == 0) {
-      LOG(LS_ERROR) << "Encountered zero-length HEVC NAL";
+      AVE_LOG(LS_ERROR) << "Encountered zero-length HEVC NAL";
       return false;
     }
 
@@ -558,4 +558,4 @@ bool HevcParameterSets::IsHevcIDR(const uint8_t* data, size_t size) {
 
   return foundIDR;
 }
-} /* namespace avp */
+} /* namespace ave */

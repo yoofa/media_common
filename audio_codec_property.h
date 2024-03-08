@@ -11,7 +11,7 @@
 #include "base/types.h"
 #include "common/codec_id.h"
 
-namespace avp {
+namespace ave {
 
 class AudioCodecProperty {
  public:
@@ -24,6 +24,6 @@ class AudioCodecProperty {
 
   uint32_t bit_rate;
 };
-}  // namespace avp
+}  // namespace ave
 
 #endif /* !AUDIO_CODEC_PROPERTY_H */

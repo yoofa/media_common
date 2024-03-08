@@ -15,7 +15,7 @@
 #include "common/message.h"
 #include "common/meta_data.h"
 
-namespace avp {
+namespace ave {
 
 class MediaSource : public MessageObject {
  public:
@@ -126,11 +126,11 @@ class MediaSource : public MessageObject {
  private:
   /* data */
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(MediaSource);
+  AVE_DISALLOW_COPY_AND_ASSIGN(MediaSource);
 };
 
 using ReadOptions = MediaSource::ReadOptions;
 
-}  // namespace avp
+}  // namespace ave
 
 #endif /* !MEDIA_SOURCE_H */

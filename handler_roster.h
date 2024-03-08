@@ -5,8 +5,8 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#ifndef AVP_HANDLERROSTER_H
-#define AVP_HANDLERROSTER_H
+#ifndef AVE_HANDLERROSTER_H
+#define AVE_HANDLERROSTER_H
 
 #include <memory>
 #include <mutex>
@@ -15,7 +15,7 @@
 #include "base/constructor_magic.h"
 #include "looper.h"
 
-namespace avp {
+namespace ave {
 
 class HandlerRoster {
  public:
@@ -38,9 +38,9 @@ class HandlerRoster {
 
   Looper::handler_id next_handler_id_;
 
-  AVP_DISALLOW_COPY_AND_ASSIGN(HandlerRoster);
+  AVE_DISALLOW_COPY_AND_ASSIGN(HandlerRoster);
 };
 
-}  // namespace avp
+}  // namespace ave
 
-#endif /* !AVP_HANDLERROSTER_H */
+#endif /* !AVE_HANDLERROSTER_H */

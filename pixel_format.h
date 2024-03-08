@@ -8,7 +8,7 @@
 #ifndef PIXEL_FORMAT_H
 #define PIXEL_FORMAT_H
 
-namespace avp {
+namespace ave {
 
 /**
  * Pixel format.
@@ -588,6 +588,6 @@ enum PixelFormat {
                  ///< might differ between versions
 };
 
-}  // namespace avp
+}  // namespace ave
 
 #endif /* !PIXEL_FORMAT_H */

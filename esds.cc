@@ -10,7 +10,7 @@
 #include "base/byte_utils.h"
 #include "base/logging.h"
 
-namespace avp {
+namespace ave {
 
 ESDS::ESDS(const void* data, size_t size)
     : mData(new uint8_t[size]),
@@ -80,7 +80,7 @@ status_t ESDS::skipDescriptorHeader(size_t offset,
     more = (x & 0x80) != 0;
   } while (more);
 
-  LOG(LS_VERBOSE) << "tag=0x" << *tag << " data_size=" << *data_size;
+  AVE_LOG(LS_VERBOSE) << "tag=0x" << *tag << " data_size=" << *data_size;
 
   if (*data_size > size) {
     return ERROR_MALFORMED;
@@ -156,7 +156,7 @@ status_t ESDS::parseESDescriptor(size_t offset, size_t size) {
       offset -= 2;
       size += 2;
 
-      LOG(LS_WARNING)
+      AVE_LOG(LS_WARNING)
           << "Found malformed 'esds' atom, ignoring missing OCR_ES_Id.";
     }
   }
@@ -230,4 +230,4 @@ status_t ESDS::parseDecoderConfigDescriptor(size_t offset, size_t size) {
 
   return OK;
 }
-} /* namespace avp */
+} /* namespace ave */

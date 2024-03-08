@@ -14,7 +14,7 @@
 #include "looper.h"
 #include "message.h"
 
-namespace avp {
+namespace ave {
 
 HandlerRoster::HandlerRoster() : next_handler_id_(1) {}
 
@@ -52,4 +52,4 @@ void HandlerRoster::unregisterHandler(Looper::handler_id handlerId) {
   }
 }
 
-}  // namespace avp
+}  // namespace ave

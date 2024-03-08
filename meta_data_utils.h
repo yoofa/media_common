@@ -10,7 +10,7 @@
 
 #include "common/meta_data.h"
 
-namespace avp {
+namespace ave {
 
 struct ABuffer;
 bool MakeAVCCodecSpecificData(MetaData& meta, const uint8_t* data, size_t size);
@@ -32,6 +32,6 @@ bool MakeAACCodecSpecificData(std::shared_ptr<Message>& meta,
 // void parseVorbisComment(Message* fileMeta,
 //                        const char* comment,
 //                        size_t commentLength);
-} /* namespace avp */
+} /* namespace ave */
 
 #endif /* !META_DATA_UTILS_H */

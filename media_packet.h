@@ -15,7 +15,7 @@
 #include "common/codec_id.h"
 #include "media_utils.h"
 
-namespace avp {
+namespace ave {
 
 class MediaPacket {
  protected:
@@ -47,12 +47,12 @@ class MediaPacket {
   void SetData(uint8_t* data, size_t size);
 
   // get sample info
-  // TODO(youfa) complete other MediaType info when merge avplayer
+  // TODO(youfa) complete other MediaType info when merge avelayer
   AudioSampleInfo* audio_info();
   VideoSampleInfo* video_info();
 
   size_t size() const { return size_; }
-  std::shared_ptr<Buffer8>& buffer() { return data_; }
+  std::shared_ptr<base::Buffer8>& buffer() { return data_; }
   uint8_t* data();
 
   MediaType media_type() const { return media_type_; }
@@ -63,7 +63,7 @@ class MediaPacket {
   using SampleInfo = std::variant<int, AudioSampleInfo, VideoSampleInfo>;
 
   size_t size_;
-  std::shared_ptr<Buffer8> data_;
+  std::shared_ptr<base::Buffer8> data_;
   void* native_handle_;
   PacketBufferType buffer_type_;
   MediaType media_type_;
@@ -72,6 +72,6 @@ class MediaPacket {
   SampleInfo sample_info_;
 };
 
-}  // namespace avp
+}  // namespace ave
 
 #endif /* !MEDIA_PACKET_H */

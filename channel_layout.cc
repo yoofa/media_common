@@ -11,7 +11,7 @@
 #include "base/logging.h"
 #include "base/macro.h"
 
-namespace avp {
+namespace ave {
 
 static const int kLayoutToChannels[] = {
     0,  // CHANNEL_LAYOUT_NONE
@@ -161,8 +161,8 @@ static const int kChannelOrderings[CHANNEL_LAYOUT_MAX + 1][CHANNELS_MAX + 1] = {
 };
 
 int ChannelLayoutToChannelCount(ChannelLayout layout) {
-  DCHECK_LT(static_cast<size_t>(layout), arraysize(kLayoutToChannels));
-  DCHECK_LE(kLayoutToChannels[layout], kMaxConcurrentChannels);
+  AVE_DCHECK_LT(static_cast<size_t>(layout), arraysize(kLayoutToChannels));
+  AVE_DCHECK_LE(kLayoutToChannels[layout], kMaxConcurrentChannels);
   return kLayoutToChannels[layout];
 }
 
@@ -186,14 +186,14 @@ ChannelLayout GuessChannelLayout(int channels) {
     case 8:
       return CHANNEL_LAYOUT_7_1;
     default:
-      LOG(LS_WARNING) << "Unsupported channel count: " << channels;
+      AVE_LOG(LS_WARNING) << "Unsupported channel count: " << channels;
   }
   return CHANNEL_LAYOUT_UNSUPPORTED;
 }
 
 int ChannelOrder(ChannelLayout layout, Channels channel) {
-  DCHECK_LT(static_cast<size_t>(layout), arraysize(kChannelOrderings));
-  DCHECK_LT(static_cast<size_t>(channel), arraysize(kChannelOrderings[0]));
+  AVE_DCHECK_LT(static_cast<size_t>(layout), arraysize(kChannelOrderings));
+  AVE_DCHECK_LT(static_cast<size_t>(channel), arraysize(kChannelOrderings[0]));
   return kChannelOrderings[layout][channel];
 }
 
@@ -267,8 +267,8 @@ const char* ChannelLayoutToString(ChannelLayout layout) {
     case CHANNEL_LAYOUT_BITSTREAM:
       return "BITSTREAM";
   }
-  DCHECK(false) << "Invalid channel layout provided: " << layout;
+  AVE_DCHECK(false) << "Invalid channel layout provided: " << layout;
   return "";
 }
 
-}  // namespace avp
+}  // namespace ave

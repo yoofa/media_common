@@ -1,4 +1,4 @@
-import("//avp.gni")
+import("//ave.gni")
 group("test") {
   testonly = true
   deps = [ ":looper_test" ]

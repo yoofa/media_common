@@ -10,7 +10,7 @@
 #include <string.h>
 #include <strings.h>
 
-namespace avp {
+namespace ave {
 
 const char* MEDIA_MIMETYPE_IMAGE_JPEG = "image/jpeg";
 const char* MEDIA_MIMETYPE_IMAGE_ANDROID_HEIC = "image/vnd.android.heic";
@@ -171,4 +171,4 @@ CodecType mimeToCodec(const char* mime) {
   }
 }
 
-} /* namespace avp */
+} /* namespace ave */

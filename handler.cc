@@ -7,11 +7,11 @@
 
 #include "handler.h"
 
-namespace avp {
+namespace ave {
 
 void Handler::deliverMessage(const std::shared_ptr<Message>& message) {
   onMessageReceived(message);
   message_counter_++;
 }
 
-}  // namespace avp
+}  // namespace ave

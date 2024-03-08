@@ -8,7 +8,7 @@
 #include "media_packet.h"
 #include "base/checks.h"
 
-namespace avp {
+namespace ave {
 
 MediaPacket MediaPacket::Create(size_t size) {
   return MediaPacket(size, protect_parameter());
@@ -20,7 +20,7 @@ MediaPacket MediaPacket::CreateWithHandle(void* handle) {
 
 MediaPacket::MediaPacket(size_t size, protect_parameter)
     : size_(size),
-      data_(std::make_shared<Buffer8>(size)),
+      data_(std::make_shared<base::Buffer8>(size)),
       native_handle_(nullptr),
       buffer_type_(PacketBufferType::kTypeNormal),
       media_type_(MediaType::UNKNOWN),
@@ -69,14 +69,14 @@ void MediaPacket::SetMediaType(MediaType type) {
 }
 
 void MediaPacket::SetSize(size_t size) {
-  DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
-  DCHECK(size > 0);
+  AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
+  AVE_DCHECK(size > 0);
   data_->SetSize(size);
   size_ = data_->size();
 }
 
 void MediaPacket::SetData(uint8_t* data, size_t size) {
-  DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
+  AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
   data_->SetData(data, size);
   size_ = data_->size();
 }
@@ -97,4 +97,4 @@ uint8_t* MediaPacket::data() {
   }
 }
 
-}  // namespace avp
+}  // namespace ave

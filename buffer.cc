@@ -12,7 +12,7 @@
 
 #include "base/checks.h"
 
-namespace avp {
+namespace ave {
 Buffer::Buffer(size_t capacity)
     : data_(malloc(capacity)),
       capacity_(capacity),
@@ -47,8 +47,8 @@ Buffer::~Buffer() {
 }
 
 void Buffer::setRange(size_t offset, size_t size) {
-  CHECK_LE(offset, capacity_);
-  CHECK_LE(offset + size, capacity_);
+  AVE_CHECK_LE(offset, capacity_);
+  AVE_CHECK_LE(offset + size, capacity_);
 
   range_offset_ = offset;
   range_length_ = size;
@@ -61,4 +61,4 @@ std::shared_ptr<Message> Buffer::meta() {
   return meta_;
 }
 
-} /* namespace avp */
+} /* namespace ave */
