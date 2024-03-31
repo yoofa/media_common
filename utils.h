@@ -11,8 +11,8 @@
 #include <memory>
 
 #include "base/errors.h"
-#include "common/message.h"
-#include "common/meta_data.h"
+#include "message.h"
+#include "meta_data.h"
 
 namespace ave {
 status_t convertMetaDataToMessage(const MetaData* meta,

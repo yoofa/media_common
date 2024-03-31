@@ -9,8 +9,9 @@
 
 #include "base/checks.h"
 #include "base/logging.h"
-#include "common/Lookup.h"
-#include "common/buffer.h"
+
+#include "Lookup.h"
+#include "buffer.h"
 
 namespace ave {
 
@@ -19,7 +20,7 @@ typedef ColorAspects CA;
 typedef ColorUtils CU;
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a)&0xFF)
+#define LO_UINT16(a) ((a) & 0xFF)
 
 const static Lookup<CU::ColorRange, CA::Range> sRanges{{
     {CU::kColorRangeLimited, CA::RangeLimited},
@@ -704,24 +705,27 @@ void ColorUtils::getColorAspectsFromFormat(
   if (convertPlatformColorAspectsToCodecAspects(range, standard, transfer,
                                                 aspects) != OK) {
     AVE_LOG(LS_WARNING) << "Ignoring illegal color aspects(R:" << range << "("
-                    << asString((ColorRange)range) << "), S:" << standard << "("
-                    << asString((ColorStandard)standard) << "), T:" << transfer
-                    << "(" << asString((ColorTransfer)transfer) << "))";
+                        << asString((ColorRange)range) << "), S:" << standard
+                        << "(" << asString((ColorStandard)standard)
+                        << "), T:" << transfer << "("
+                        << asString((ColorTransfer)transfer) << "))";
     // Invalid values were converted to unspecified !params!, but otherwise were
     // not changed For encoders, we leave these as is. For decoders, we will use
     // default values.
   }
   AVE_LOG(LS_VERBOSE) << "Got color aspects (R:" << aspects.mRange << "("
-                  << asString(aspects.mRange) << "), P:" << aspects.mPrimaries
-                  << "(" << asString(aspects.mPrimaries)
-                  << "), M:" << aspects.mMatrixCoeffs << "("
-                  << asString(aspects.mMatrixCoeffs)
-                  << "), T:" << aspects.mTransfer << "("
-                  << asString(aspects.mTransfer) << ")) "
-                  << "from format (out:R:" << range << "("
-                  << asString((ColorRange)range) << "), S:" << standard << "("
-                  << asString((ColorStandard)standard) << "), T:" << transfer
-                  << "(" << asString((ColorTransfer)transfer) << "))";
+                      << asString(aspects.mRange)
+                      << "), P:" << aspects.mPrimaries << "("
+                      << asString(aspects.mPrimaries)
+                      << "), M:" << aspects.mMatrixCoeffs << "("
+                      << asString(aspects.mMatrixCoeffs)
+                      << "), T:" << aspects.mTransfer << "("
+                      << asString(aspects.mTransfer) << ")) "
+                      << "from format (out:R:" << range << "("
+                      << asString((ColorRange)range) << "), S:" << standard
+                      << "(" << asString((ColorStandard)standard)
+                      << "), T:" << transfer << "("
+                      << asString((ColorTransfer)transfer) << "))";
 }
 
 // static
@@ -744,16 +748,18 @@ void ColorUtils::setColorAspectsIntoFormat(const ColorAspects& aspects,
     format->setInt32("color-transfer", transfer);
   }
   AVE_LOG(LS_VERBOSE) << "setting color aspects (R:" << aspects.mRange << "("
-                  << asString(aspects.mRange) << "), P:" << aspects.mPrimaries
-                  << "(" << asString(aspects.mPrimaries)
-                  << "), M:" << aspects.mMatrixCoeffs << "("
-                  << asString(aspects.mMatrixCoeffs)
-                  << "), T:" << aspects.mTransfer << "("
-                  << asString(aspects.mTransfer) << ")) "
-                  << "from format (out:R:" << range << "("
-                  << asString((ColorRange)range) << "), S:" << standard << "("
-                  << asString((ColorStandard)standard) << "), T:" << transfer
-                  << "(" << asString((ColorTransfer)transfer) << "))";
+                      << asString(aspects.mRange)
+                      << "), P:" << aspects.mPrimaries << "("
+                      << asString(aspects.mPrimaries)
+                      << "), M:" << aspects.mMatrixCoeffs << "("
+                      << asString(aspects.mMatrixCoeffs)
+                      << "), T:" << aspects.mTransfer << "("
+                      << asString(aspects.mTransfer) << ")) "
+                      << "from format (out:R:" << range << "("
+                      << asString((ColorRange)range) << "), S:" << standard
+                      << "(" << asString((ColorStandard)standard)
+                      << "), T:" << transfer << "("
+                      << asString((ColorTransfer)transfer) << "))";
 }
 // static
 void ColorUtils::fillHdrStaticInfoBuffer(const HDRStaticInfo& info,
@@ -832,7 +838,7 @@ bool ColorUtils::getHDRStaticInfoFromFormat(
   // TODO: Make this more flexible when adding more members to HDRStaticInfo
   if (buf->size() != 25 /* static Metadata Type 1 size */) {
     AVE_LOG(LS_WARNING) << "Ignore invalid HDRStaticInfo with size: "
-                    << buf->size();
+                        << buf->size();
     return false;
   }
 
@@ -856,16 +862,18 @@ bool ColorUtils::getHDRStaticInfoFromFormat(
   info->sType1.mMaxContentLightLevel = U16LE_AT(&data[21]);
   info->sType1.mMaxFrameAverageLightLevel = U16LE_AT(&data[23]);
 
-  AVE_LOG(LS_VERBOSE) << "Got HDRStaticInfo from config (R: " << info->sType1.mR.x
-                  << " " << info->sType1.mR.y << ", G: " << info->sType1.mG.x
-                  << " " << info->sType1.mG.y << ", B: " << info->sType1.mB.x
-                  << " " << info->sType1.mB.y << ", W: " << info->sType1.mW.x
-                  << " " << info->sType1.mW.y
-                  << ", MaxDispL: " << info->sType1.mMaxDisplayLuminance
-                  << ", MinDispL: " << info->sType1.mMinDisplayLuminance
-                  << ", MaxContentL: " << info->sType1.mMaxContentLightLevel
-                  << ", MaxFrameAvgL: "
-                  << info->sType1.mMaxFrameAverageLightLevel << ")";
+  AVE_LOG(LS_VERBOSE) << "Got HDRStaticInfo from config (R: "
+                      << info->sType1.mR.x << " " << info->sType1.mR.y
+                      << ", G: " << info->sType1.mG.x << " "
+                      << info->sType1.mG.y << ", B: " << info->sType1.mB.x
+                      << " " << info->sType1.mB.y
+                      << ", W: " << info->sType1.mW.x << " "
+                      << info->sType1.mW.y
+                      << ", MaxDispL: " << info->sType1.mMaxDisplayLuminance
+                      << ", MinDispL: " << info->sType1.mMinDisplayLuminance
+                      << ", MaxContentL: " << info->sType1.mMaxContentLightLevel
+                      << ", MaxFrameAvgL: "
+                      << info->sType1.mMaxFrameAverageLightLevel << ")";
 
   return true;
 }

@@ -11,7 +11,8 @@
 
 #include "base/checks.h"
 #include "base/logging.h"
-#include "common/bit_reader.h"
+
+#include "bit_reader.h"
 
 namespace ave {
 
@@ -70,11 +71,11 @@ static void skipScalingList(BitReader* br, size_t sizeOfScalingList) {
       // shall be in the range of −128 to +127, inclusive.
       if (delta_scale < -128) {
         AVE_LOG(LS_WARNING) << "delta_scale (" << delta_scale
-                        << ") is below range, capped to -128";
+                            << ") is below range, capped to -128";
         delta_scale = -128;
       } else if (delta_scale > 127) {
         AVE_LOG(LS_WARNING) << "delta_scale (" << delta_scale
-                        << ") is above range, capped to 127";
+                            << ") is above range, capped to 127";
         delta_scale = 127;
       }
       nextScale = (lastScale + (delta_scale + 256)) % 256;
@@ -198,10 +199,11 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
     }
 
     AVE_LOG(LS_VERBOSE) << "frame_crop = (" << frame_crop_left_offset << ", "
-                    << frame_crop_right_offset << ", " << frame_crop_top_offset
-                    << ", " << frame_crop_bottom_offset
-                    << "), cropUnitX = " << cropUnitX
-                    << ", cropUnitY = " << cropUnitY;
+                        << frame_crop_right_offset << ", "
+                        << frame_crop_top_offset << ", "
+                        << frame_crop_bottom_offset
+                        << "), cropUnitX = " << cropUnitX
+                        << ", cropUnitY = " << cropUnitY;
 
     // *width -= (frame_crop_left_offset + frame_crop_right_offset) *
     // cropUnitX;
@@ -261,7 +263,7 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
     }
 
     AVE_LOG(LS_VERBOSE) << "sample aspect ratio = " << sar_width << " : "
-                    << sar_height;
+                        << sar_height;
 
     if (sarWidth != NULL) {
       *sarWidth = sar_width;
@@ -439,17 +441,18 @@ std::shared_ptr<Buffer> MakeAVCCodecSpecificData(
   if (sarWidth != nullptr && sarHeight != nullptr) {
     if ((*sarWidth > 0 && *sarHeight > 0) &&
         (*sarWidth != 1 || *sarHeight != 1)) {
-      AVE_LOG(LS_INFO) << "found AVC codec config (" << *width << " x " << *height
-                   << ", " << AVCProfileToString(profile) << "-profile level "
-                   << level / 10 << "." << level % 10 << ") SAR " << *sarWidth
-                   << " : " << *sarHeight;
+      AVE_LOG(LS_INFO) << "found AVC codec config (" << *width << " x "
+                       << *height << ", " << AVCProfileToString(profile)
+                       << "-profile level " << level / 10 << "." << level % 10
+                       << ") SAR " << *sarWidth << " : " << *sarHeight;
     } else {
       // We treat *:0 and 0:* (unspecified) as 1:1.
       *sarWidth = 0;
       *sarHeight = 0;
-      AVE_LOG(LS_INFO) << "found AVC codec config (" << *width << " x " << *height
-                   << ", " << AVCProfileToString(profile) << "-profile level "
-                   << level / 10 << "." << level % 10 << ")";
+      AVE_LOG(LS_INFO) << "found AVC codec config (" << *width << " x "
+                       << *height << ", " << AVCProfileToString(profile)
+                       << "-profile level " << level / 10 << "." << level % 10
+                       << ")";
     }
   }
   return csd;
@@ -485,7 +488,7 @@ bool IsAVCReferenceFrame(const std::shared_ptr<Buffer>& accessUnit) {
   size_t size = accessUnit->size();
   if (data == NULL) {
     AVE_LOG(LS_ERROR) << "IsAVCReferenceFrame: called on NULL data ("
-                  << accessUnit.get() << ", " << size << ")";
+                      << accessUnit.get() << ", " << size << ")";
     return false;
   }
 
@@ -494,7 +497,7 @@ bool IsAVCReferenceFrame(const std::shared_ptr<Buffer>& accessUnit) {
   while (getNextNALUnit(&data, &size, &nalStart, &nalSize, true) == OK) {
     if (nalSize == 0) {
       AVE_LOG(LS_ERROR) << "IsAVCReferenceFrame: invalid nalSize: 0 ("
-                    << accessUnit.get() << ", " << size << ")";
+                        << accessUnit.get() << ", " << size << ")";
       return false;
     }
 
@@ -541,7 +544,8 @@ bool ExtractDimensionsFromVOLHeader(const uint8_t* data,
   br.skipBits(1);  // random_accessible_vol
   unsigned video_object_type_indication = br.getBits(8);
 
-  AVE_CHECK_NE(video_object_type_indication, 0x21u /* Fine Granularity Scalable */);
+  AVE_CHECK_NE(video_object_type_indication,
+               0x21u /* Fine Granularity Scalable */);
 
   if (br.getBits(1)) {
     br.skipBits(4);  // video_object_layer_verid
@@ -552,20 +556,20 @@ bool ExtractDimensionsFromVOLHeader(const uint8_t* data,
     br.skipBits(8);  // par_width
     br.skipBits(8);  // par_height
   }
-  if (br.getBits(1)) {       // vol_control_parameters
-    br.skipBits(2);          // chroma_format
-    br.skipBits(1);          // low_delay
-    if (br.getBits(1)) {     // vbv_parameters
-      br.skipBits(15);       // first_half_bit_rate
+  if (br.getBits(1)) {           // vol_control_parameters
+    br.skipBits(2);              // chroma_format
+    br.skipBits(1);              // low_delay
+    if (br.getBits(1)) {         // vbv_parameters
+      br.skipBits(15);           // first_half_bit_rate
       AVE_CHECK(br.getBits(1));  // marker_bit
-      br.skipBits(15);       // latter_half_bit_rate
+      br.skipBits(15);           // latter_half_bit_rate
       AVE_CHECK(br.getBits(1));  // marker_bit
-      br.skipBits(15);       // first_half_vbv_buffer_size
+      br.skipBits(15);           // first_half_vbv_buffer_size
       AVE_CHECK(br.getBits(1));  // marker_bit
-      br.skipBits(3);        // latter_half_vbv_buffer_size
-      br.skipBits(11);       // first_half_vbv_occupancy
+      br.skipBits(3);            // latter_half_vbv_buffer_size
+      br.skipBits(11);           // first_half_vbv_occupancy
       AVE_CHECK(br.getBits(1));  // marker_bit
-      br.skipBits(15);       // latter_half_vbv_occupancy
+      br.skipBits(15);           // latter_half_vbv_occupancy
       AVE_CHECK(br.getBits(1));  // marker_bit
     }
   }

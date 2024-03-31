@@ -4,6 +4,7 @@
  *
  * Distributed under terms of the GPLv2 license.
  */
+
 #include "utils.h"
 
 #include <memory>
@@ -12,15 +13,16 @@
 #include "base/checks.h"
 #include "base/errors.h"
 #include "base/logging.h"
-#include "common/Lookup.h"
-#include "common/buffer.h"
-#include "common/codec_constants.h"
-#include "common/color_utils.h"
-#include "common/esds.h"
-#include "common/hevc_utils.h"
-#include "common/media_defs.h"
-#include "common/message.h"
-#include "common/meta_data.h"
+
+#include "Lookup.h"
+#include "buffer.h"
+#include "codec_constants.h"
+#include "color_utils.h"
+#include "esds.h"
+#include "hevc_utils.h"
+#include "media_defs.h"
+#include "message.h"
+#include "meta_data.h"
 
 #define AMEDIAFORMAT_KEY_MPEGH_PROFILE_LEVEL_INDICATION \
   "mpegh-profile-level-indication"
@@ -199,7 +201,7 @@ static void parseDolbyVisionProfileLevelFromDvcc(
   if (size != 24 ||
       ((ptr[0] != 1 || ptr[1] != 0) && (ptr[0] != 2 || ptr[1] != 1))) {
     AVE_LOG(LS_VERBOSE) << "Size " << size << ", dv_major " << ptr[0]
-                    << ", dv_minor " << ptr[1];
+                        << ", dv_minor " << ptr[1];
     return;
   }
 
@@ -211,7 +213,7 @@ static void parseDolbyVisionProfileLevelFromDvcc(
   const int32_t bl_compatibility_id = (int32_t)(ptr[4] >> 4);
 
   AVE_LOG(LS_VERBOSE) << "profile-level-compatibility value in dv(c|v)c box "
-                  << profile << "-" << level << "-" << bl_compatibility_id;
+                      << profile << "-" << level << "-" << bl_compatibility_id;
 
   // All Dolby Profiles will have profile and level info in MediaFormat
   // Profile 8 and 9 will have bl_compatibility_id too.
@@ -1244,9 +1246,9 @@ status_t convertMetaDataToMessage(const MetaData* meta,
         hvcc.findParam32(kTransferCharacteristics, &isoTransfer) &&
         hvcc.findParam32(kMatrixCoeffs, &isoMatrix) &&
         hvcc.findParam32(kVideoFullRangeFlag, &isoRange)) {
-      AVE_LOG(LS_VERBOSE) << "found iso color aspects : primaris=" << isoPrimaries
-                      << ", transfer=" << isoTransfer
-                      << ", matrix=" << isoMatrix << ", range=" << isoRange;
+      AVE_LOG(LS_VERBOSE) << "found iso color aspects : primaris="
+                          << isoPrimaries << ", transfer=" << isoTransfer
+                          << ", matrix=" << isoMatrix << ", range=" << isoRange;
 
       ColorAspects aspects;
       ColorUtils::convertIsoColorAspectsToCodecAspects(
@@ -1255,16 +1257,16 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mPrimaries == ColorAspects::PrimariesUnspecified) {
         int32_t primaries;
         if (meta->findInt32(kKeyColorPrimaries, &primaries)) {
-          AVE_LOG(LS_VERBOSE) << "unspecified primaries found, replaced to "
-                          << primaries;
+          AVE_LOG(LS_VERBOSE)
+              << "unspecified primaries found, replaced to " << primaries;
           aspects.mPrimaries = static_cast<ColorAspects::Primaries>(primaries);
         }
       }
       if (aspects.mTransfer == ColorAspects::TransferUnspecified) {
         int32_t transferFunction;
         if (meta->findInt32(kKeyTransferFunction, &transferFunction)) {
-          AVE_LOG(LS_VERBOSE) << "unspecified transfer found, replaced to "
-                          << transferFunction;
+          AVE_LOG(LS_VERBOSE)
+              << "unspecified transfer found, replaced to " << transferFunction;
           aspects.mTransfer =
               static_cast<ColorAspects::Transfer>(transferFunction);
         }
@@ -1272,8 +1274,8 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mMatrixCoeffs == ColorAspects::MatrixUnspecified) {
         int32_t colorMatrix;
         if (meta->findInt32(kKeyColorMatrix, &colorMatrix)) {
-          AVE_LOG(LS_VERBOSE) << "unspecified matrix found, replaced to "
-                          << colorMatrix;
+          AVE_LOG(LS_VERBOSE)
+              << "unspecified matrix found, replaced to " << colorMatrix;
           aspects.mMatrixCoeffs =
               static_cast<ColorAspects::MatrixCoeffs>(colorMatrix);
         }
@@ -1281,7 +1283,8 @@ status_t convertMetaDataToMessage(const MetaData* meta,
       if (aspects.mRange == ColorAspects::RangeUnspecified) {
         int32_t range;
         if (meta->findInt32(kKeyColorRange, &range)) {
-          AVE_LOG(LS_VERBOSE) << "unspecified range found, replaced to " << range;
+          AVE_LOG(LS_VERBOSE)
+              << "unspecified range found, replaced to " << range;
           aspects.mRange = static_cast<ColorAspects::Range>(range);
         }
       }

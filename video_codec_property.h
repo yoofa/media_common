@@ -12,7 +12,7 @@
 
 #include <variant>
 
-#include "common/codec_id.h"
+#include "codec_id.h"
 
 namespace ave {
 

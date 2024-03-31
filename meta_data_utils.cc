@@ -10,11 +10,11 @@
 #include <cstring>
 
 #include "base/logging.h"
-#include "common/avc_utils.h"
-#include "common/bit_reader.h"
-#include "common/buffer.h"
-#include "common/media_defs.h"
-#include "common/utils.h"
+
+#include "avc_utils.h"
+#include "bit_reader.h"
+#include "buffer.h"
+#include "media_defs.h"
 
 namespace ave {
 
@@ -345,7 +345,8 @@ void parseVorbisComment(AMediaFormat* fileMeta,
         if (errno == 0) {
           meta->setInt32(fileMeta, kMap[j].mKey, hapticChannelCount);
         } else {
-          AVE_LOG(LS_INFO) << "Error(%d) when parsing haptic channel count", errno);
+          AVE_LOG(LS_INFO) << "Error(%d) when parsing haptic channel count",
+errno);
         }
       } else {
         meta->setString(fileMeta, kMap[j].mKey, &comment[tagLen + 1]);

@@ -8,7 +8,7 @@
 #ifndef META_DATA_UTILS_H
 #define META_DATA_UTILS_H
 
-#include "common/meta_data.h"
+#include "meta_data.h"
 
 namespace ave {
 

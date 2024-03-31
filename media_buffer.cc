@@ -7,7 +7,7 @@
 
 #include "media_buffer.h"
 
-#include "common/buffer.h"
+#include "buffer.h"
 
 namespace ave {
 

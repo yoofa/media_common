@@ -11,9 +11,9 @@
 #include <memory>
 #include <vector>
 
-#include "common/media_errors.h"
-#include "common/message.h"
-#include "common/meta_data.h"
+#include "media_errors.h"
+#include "message.h"
+#include "meta_data.h"
 
 namespace ave {
 

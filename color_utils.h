@@ -9,8 +9,9 @@
 #define COLOR_UTILS_H
 
 #include "base/types.h"
-#include "common/media/hardware/video_api.h"
-#include "common/message.h"
+
+#include "media/hardware/video_api.h"
+#include "message.h"
 
 namespace ave {
 

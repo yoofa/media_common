@@ -9,7 +9,8 @@
 #define AUDIO_CODEC_PROPERTY_H
 
 #include "base/types.h"
-#include "common/codec_id.h"
+
+#include "codec_id.h"
 
 namespace ave {
 

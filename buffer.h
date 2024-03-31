@@ -12,7 +12,8 @@
 
 #include "base/constructor_magic.h"
 #include "base/types.h"
-#include "common/message.h"
+
+#include "message.h"
 
 namespace ave {
 

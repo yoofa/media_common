@@ -8,7 +8,7 @@
 #ifndef ESDS_H
 #define ESDS_H
 
-#include "common/media_errors.h"
+#include "media_errors.h"
 
 namespace ave {
 

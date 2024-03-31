@@ -1,4 +1,4 @@
-group("common") {
+group("media") {
   deps = [ ":foundation" ]
 }
 

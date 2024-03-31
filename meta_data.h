@@ -10,8 +10,6 @@
 
 #include <string>
 
-#include "common/message.h"
-
 namespace ave {
 
 // The following keys map to int32_t data unless indicated otherwise.

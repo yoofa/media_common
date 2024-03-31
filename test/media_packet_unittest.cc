@@ -5,7 +5,7 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#include "common/media_utils.h"
+#include "../media_utils.h"
 #include "test/gtest.h"
 
 #include "../media_packet.h"

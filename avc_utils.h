@@ -9,7 +9,8 @@
 #define AVC_UTILS_H
 
 #include "base/types.h"
-#include "common/buffer.h"
+
+#include "buffer.h"
 
 namespace ave {
 

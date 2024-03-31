@@ -9,10 +9,11 @@
 
 #include "base/checks.h"
 #include "base/logging.h"
-#include "common/avc_utils.h"
-#include "common/bit_reader.h"
-#include "common/buffer.h"
-#include "common/media_errors.h"
+
+#include "avc_utils.h"
+#include "bit_reader.h"
+#include "buffer.h"
+#include "media_errors.h"
 
 #define UNUSED_PARAM __attribute__((unused))
 
@@ -132,7 +133,7 @@ bool HevcParameterSets::write(size_t index, uint8_t* dest, size_t size) {
   const std::shared_ptr<Buffer>& nalUnit = mNalUnits[index];
   if (size < nalUnit->size()) {
     AVE_LOG(LS_ERROR) << "dest buffer size too small: " << size << " vs. "
-                  << nalUnit->size() << " to be written";
+                      << nalUnit->size() << " to be written";
     return false;
   }
   memcpy(dest, nalUnit->data(), nalUnit->size());
