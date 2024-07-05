@@ -1,0 +1,8 @@
+import("//base/build/ave.gni")
+
+ave_library("audio_codec_properity") {
+  sources = [
+    "audio_codec_properity.cc",
+    "audio_codec_properity.h",
+  ]
+}

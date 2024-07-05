@@ -1,0 +1,84 @@
+import("//base/build/ave.gni")
+
+ave_source_set("handler") {
+  sources = [
+    "handler.cc",
+    "handler.h",
+    "handler_roster.cc",
+    "handler_roster.h",
+    "looper.cc",
+    "looper.h",
+    "message.cc",
+    "message.h",
+  ]
+}
+
+ave_library("avc_util") {
+  sources = [
+    "avc_utils.cc",
+    "avc_utils.h",
+  ]
+}
+
+ave_library("hevc_util") {
+  sources = [
+    "hevc_utils.cc",
+    "hevc_utils.h",
+  ]
+}
+
+ave_library("media_packet") {
+  sources = [
+    "media_packet.cc",
+    "media_packet.h",
+  ]
+}
+
+ave_library("esds") {
+  sources = [
+    "esds.cc",
+    "esds.h",
+  ]
+}
+
+ave_library("color_utils") {
+  sources = [
+    "color_utils.cc",
+    "color_utils.h",
+  ]
+}
+
+ave_library("bit_reader") {
+  sources = [
+    "bit_reader.cc",
+    "bit_reader.h",
+  ]
+}
+
+ave_library("foundation") {
+  sources = [
+    "media_source.h",
+    "media_utils.cc",
+    "media_utils.h",
+  ]
+}
+
+# Tests
+
+source_set("media_packet_unittest") {
+  testonly = true
+  sources = [ "test/media_packet_unittest.cc" ]
+  deps = [
+    ":media_packet",
+    "//test:test_support",
+  ]
+}
+
+executable("media_foundation_unittests") {
+  testonly = true
+  deps = [
+    ":media_packet_unittest",
+    "//test:test_main",
+    "//test:test_support",
+  ]
+}

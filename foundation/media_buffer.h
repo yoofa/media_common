@@ -8,13 +8,16 @@
 #ifndef AVE_MEDIA_BUFFER_H
 #define AVE_MEDIA_BUFFER_H
 
-#include "buffer.h"
-#include "message.h"
+#include "base/buffer.h"
+#include "foundation/message.h"
 
 namespace ave {
+namespace media {
+
 class MediaBuffer {
  public:
-  MediaBuffer(std::shared_ptr<Message> meta, std::shared_ptr<Buffer> buffer);
+  MediaBuffer(std::shared_ptr<base::Buffer> buffer,
+              std::shared_ptr<Message> meta);
   virtual ~MediaBuffer() = default;
 
   uint8_t* base();
@@ -29,8 +32,10 @@ class MediaBuffer {
 
  private:
   std::shared_ptr<Message> meta_;
-  std::shared_ptr<Buffer> buffer_;
+  std::shared_ptr<base::Buffer> buffer_;
 };
+
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AVE_MEDIA_BUFFER_H */

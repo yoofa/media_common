@@ -11,11 +11,11 @@
 #include <memory>
 
 #include "base/constructor_magic.h"
-#include "base/types.h"
 
 #include "message.h"
 
 namespace ave {
+namespace media {
 
 class Buffer {
  public:
@@ -50,6 +50,7 @@ class Buffer {
   AVE_DISALLOW_COPY_AND_ASSIGN(Buffer);
 };
 
+}  // namespace media
 } /* namespace ave */
 
 #endif /* !BUFFER_H */

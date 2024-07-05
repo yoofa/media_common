@@ -9,6 +9,7 @@
 #define MEDIA_DEFS_H
 
 namespace ave {
+
 extern const char* MEDIA_MIMETYPE_IMAGE_JPEG;
 extern const char* MEDIA_MIMETYPE_IMAGE_ANDROID_HEIC;
 extern const char* MEDIA_MIMETYPE_IMAGE_AVIF;

@@ -13,6 +13,7 @@
 #include "codec_id.h"
 
 namespace ave {
+namespace media {
 
 class AudioCodecProperty {
  public:
@@ -25,6 +26,7 @@ class AudioCodecProperty {
 
   uint32_t bit_rate;
 };
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AUDIO_CODEC_PROPERTY_H */

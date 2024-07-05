@@ -12,6 +12,7 @@
 #include "base/macro.h"
 
 namespace ave {
+namespace media {
 
 static const int kLayoutToChannels[] = {
     0,  // CHANNEL_LAYOUT_NONE
@@ -271,4 +272,5 @@ const char* ChannelLayoutToString(ChannelLayout layout) {
   return "";
 }
 
+}  // namespace media
 }  // namespace ave

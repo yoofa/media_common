@@ -10,7 +10,7 @@
 
 #include "base/types.h"
 
-#include "media/hardware/video_api.h"
+#include "..//hardware/video_api.h"
 #include "message.h"
 
 namespace ave {

@@ -8,6 +8,9 @@
 #ifndef CODEC_ID_H
 #define CODEC_ID_H
 
+namespace ave {
+namespace media {
+
 enum class CodecId {
   AV_CODEC_ID_NONE,
 
@@ -533,5 +536,7 @@ enum class CodecId {
   AV_CODEC_ID_BIN_DATA,
 
 };
+}  // namespace media
+}  // namespace ave
 
 #endif /* !CODEC_ID_H */

@@ -7,12 +7,11 @@
 
 #include "media_buffer.h"
 
-#include "buffer.h"
-
 namespace ave {
+namespace media {
 
-MediaBuffer::MediaBuffer(std::shared_ptr<Message> meta,
-                         std::shared_ptr<Buffer> buffer)
+MediaBuffer::MediaBuffer(std::shared_ptr<base::Buffer> buffer,
+                         std::shared_ptr<Message> meta)
     : meta_(std::move(meta)), buffer_(std::move(buffer)) {}
 
 uint8_t* MediaBuffer::base() {
@@ -47,4 +46,5 @@ void MediaBuffer::setMeta(std::shared_ptr<Message> meta) {
   meta_ = std::move(meta);
 }
 
+}  // namespace media
 }  // namespace ave

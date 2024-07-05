@@ -7,9 +7,11 @@
 
 #ifndef CODEC_CONSTANTS_H
 #define CODEC_CONSTANTS_H
-#include "base/types.h"
+
+#include <sys/types.h>
 
 namespace {
+
 constexpr int32_t AVCProfileBaseline = 0x01;
 constexpr int32_t AVCProfileMain = 0x02;
 constexpr int32_t AVCProfileExtended = 0x04;

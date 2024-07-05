@@ -8,6 +8,7 @@
 #include "audio_codec_property.h"
 
 namespace ave {
+namespace media {
 
 AudioCodecProperty::AudioCodecProperty()
     : codec_id(CodecId::AV_CODEC_ID_NONE),
@@ -16,4 +17,5 @@ AudioCodecProperty::AudioCodecProperty()
       sample_rate(0),
       bit_rate(0) {}
 
+}  // namespace media
 }  // namespace ave

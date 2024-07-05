@@ -1,0 +1,6 @@
+ave_library("audio_channel_layout") {
+  sources = [
+    "channel_layout.cc",
+    "channel_layout.h",
+  ]
+}

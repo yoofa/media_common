@@ -8,9 +8,9 @@
 #ifndef MEDIA_UTILS_H
 #define MEDIA_UTILS_H
 
-#include "base/types.h"
+#include <sys/types.h>
 
-#include "codec_id.h"
+#include "../codec/codec_id.h"
 #include "pixel_format.h"
 
 namespace ave {

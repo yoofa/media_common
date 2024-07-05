@@ -13,6 +13,8 @@
 #include "base/checks.h"
 
 namespace ave {
+namespace media {
+
 Buffer::Buffer(size_t capacity)
     : data_(malloc(capacity)),
       capacity_(capacity),
@@ -61,4 +63,5 @@ std::shared_ptr<Message> Buffer::meta() {
   return meta_;
 }
 
+}  // namespace media
 } /* namespace ave */

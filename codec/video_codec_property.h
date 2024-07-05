@@ -15,6 +15,7 @@
 #include "codec_id.h"
 
 namespace ave {
+namespace media {
 
 // Video codec
 enum class VideoCodecComplexity {
@@ -118,6 +119,8 @@ class VideoCodecProperty {
 };
 
 const char* CodecName(CodecId type);
+
+}  // namespace media
 }  // namespace ave
 
 #endif /* !VIDEO_CODEC_PROPERTY_H */

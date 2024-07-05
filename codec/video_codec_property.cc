@@ -10,6 +10,7 @@
 #include "base/checks.h"
 
 namespace ave {
+namespace media {
 
 namespace {
 constexpr char kPayloadNameVp8[] = "VP8";
@@ -88,4 +89,5 @@ const char* CodecName(CodecId type) {
   }
 }
 
+}  // namespace media
 }  // namespace ave
