@@ -8,6 +8,7 @@
 #include "media_utils.h"
 
 namespace ave {
+namespace media {
 
 const char* get_media_type_string(MediaType media_type) {
   switch (media_type) {
@@ -25,4 +26,6 @@ const char* get_media_type_string(MediaType media_type) {
       return nullptr;
   }
 }
+
+}  // namespace media
 }  // namespace ave

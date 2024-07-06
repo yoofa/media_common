@@ -14,7 +14,7 @@ namespace media {
 
 // Enumerates the various representations of the ordering of audio channels.
 // Logged to UMA, so never reuse a value, always add new/greater ones!
-enum ChannelLayout {
+using channel_layout_t = enum ChannelLayout {
   CHANNEL_LAYOUT_NONE = 0,
   CHANNEL_LAYOUT_UNSUPPORTED = 1,
 
@@ -122,7 +122,7 @@ enum ChannelLayout {
 
 // Note: Do not reorder or reassign these values; other code depends on their
 // ordering to operate correctly. E.g., CoreAudio channel layout computations.
-enum Channels {
+using channel_t = enum Channels {
   LEFT = 0,
   RIGHT,
   CENTER,

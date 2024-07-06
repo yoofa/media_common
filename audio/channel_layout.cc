@@ -7,6 +7,8 @@
 
 #include "channel_layout.h"
 
+#include <array>
+
 #include "base/checks.h"
 #include "base/logging.h"
 #include "base/macro.h"
@@ -14,7 +16,7 @@
 namespace ave {
 namespace media {
 
-static const int kLayoutToChannels[] = {
+static const std::array<int, 35> kLayoutToChannels = {
     0,  // CHANNEL_LAYOUT_NONE
     0,  // CHANNEL_LAYOUT_UNSUPPORTED
     1,  // CHANNEL_LAYOUT_MONO
@@ -56,113 +58,115 @@ static const int kLayoutToChannels[] = {
 // surround sound channel in FFmpeg's 5.1 layout is in the 5th position (because
 // the order is L, R, C, LFE, LS, RS), so
 // kChannelOrderings[CHANNEL_LAYOUT_5_1][SIDE_LEFT] = 4;
-static const int kChannelOrderings[CHANNEL_LAYOUT_MAX + 1][CHANNELS_MAX + 1] = {
-    // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
+static const std::array<std::array<int, CHANNELS_MAX + 1>,
+                        CHANNEL_LAYOUT_MAX + 1>
+    kChannelOrderings = {{
+        // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
 
-    // CHANNEL_LAYOUT_NONE
-    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_NONE
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_UNSUPPORTED
-    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_UNSUPPORTED
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_MONO
-    {-1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_MONO
+        {-1, -1, 0, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_STEREO
-    {0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_STEREO
+        {0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_2_1
-    {0, 1, -1, -1, -1, -1, -1, -1, 2, -1, -1},
+        // CHANNEL_LAYOUT_2_1
+        {0, 1, -1, -1, -1, -1, -1, -1, 2, -1, -1},
 
-    // CHANNEL_LAYOUT_SURROUND
-    {0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_SURROUND
+        {0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_4_0
-    {0, 1, 2, -1, -1, -1, -1, -1, 3, -1, -1},
+        // CHANNEL_LAYOUT_4_0
+        {0, 1, 2, -1, -1, -1, -1, -1, 3, -1, -1},
 
-    // CHANNEL_LAYOUT_2_2
-    {0, 1, -1, -1, -1, -1, -1, -1, -1, 2, 3},
+        // CHANNEL_LAYOUT_2_2
+        {0, 1, -1, -1, -1, -1, -1, -1, -1, 2, 3},
 
-    // CHANNEL_LAYOUT_5_1
-    {0, 1, 2, 3, -1, -1, -1, -1, -1, 4, 5},
+        // CHANNEL_LAYOUT_5_1
+        {0, 1, 2, 3, -1, -1, -1, -1, -1, 4, 5},
 
-    // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR //
-    // CHANNEL_LAYOUT_QUAD
-    {0, 1, -1, -1, 2, 3, -1, -1, -1, -1, -1},
+        // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR //
+        // CHANNEL_LAYOUT_QUAD
+        {0, 1, -1, -1, 2, 3, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_5_0
-    {0, 1, 2, -1, -1, -1, -1, -1, -1, 3, 4},
+        // CHANNEL_LAYOUT_5_0
+        {0, 1, 2, -1, -1, -1, -1, -1, -1, 3, 4},
 
-    // CHANNEL_LAYOUT_5_1_BACK
-    {0, 1, 2, 3, 4, 5, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_5_1_BACK
+        {0, 1, 2, 3, 4, 5, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_7_0
-    {0, 1, 2, -1, 5, 6, -1, -1, -1, 3, 4},
+        // CHANNEL_LAYOUT_7_0
+        {0, 1, 2, -1, 5, 6, -1, -1, -1, 3, 4},
 
-    // CHANNEL_LAYOUT_7_1
-    {0, 1, 2, 3, 6, 7, -1, -1, -1, 4, 5},
+        // CHANNEL_LAYOUT_7_1
+        {0, 1, 2, 3, 6, 7, -1, -1, -1, 4, 5},
 
-    // CHANNEL_LAYOUT_7_1_WIDE
-    {0, 1, 2, 3, -1, -1, 6, 7, -1, 4, 5},
+        // CHANNEL_LAYOUT_7_1_WIDE
+        {0, 1, 2, 3, -1, -1, 6, 7, -1, 4, 5},
 
-    // CHANNEL_LAYOUT_STEREO_DOWNMIX
-    {0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_STEREO_DOWNMIX
+        {0, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_2POINT1
-    {0, 1, -1, 2, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_2POINT1
+        {0, 1, -1, 2, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_3_1
-    {0, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_3_1
+        {0, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_4_1
-    {0, 1, 2, 4, -1, -1, -1, -1, 3, -1, -1},
+        // CHANNEL_LAYOUT_4_1
+        {0, 1, 2, 4, -1, -1, -1, -1, 3, -1, -1},
 
-    // CHANNEL_LAYOUT_6_0
-    {0, 1, 2, -1, -1, -1, -1, -1, 5, 3, 4},
+        // CHANNEL_LAYOUT_6_0
+        {0, 1, 2, -1, -1, -1, -1, -1, 5, 3, 4},
 
-    // CHANNEL_LAYOUT_6_0_FRONT
-    {0, 1, -1, -1, -1, -1, 4, 5, -1, 2, 3},
+        // CHANNEL_LAYOUT_6_0_FRONT
+        {0, 1, -1, -1, -1, -1, 4, 5, -1, 2, 3},
 
-    // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
+        // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
 
-    // CHANNEL_LAYOUT_HEXAGONAL
-    {0, 1, 2, -1, 3, 4, -1, -1, 5, -1, -1},
+        // CHANNEL_LAYOUT_HEXAGONAL
+        {0, 1, 2, -1, 3, 4, -1, -1, 5, -1, -1},
 
-    // CHANNEL_LAYOUT_6_1
-    {0, 1, 2, 3, -1, -1, -1, -1, 6, 4, 5},
+        // CHANNEL_LAYOUT_6_1
+        {0, 1, 2, 3, -1, -1, -1, -1, 6, 4, 5},
 
-    // CHANNEL_LAYOUT_6_1_BACK
-    {0, 1, 2, 3, 4, 5, -1, -1, 6, -1, -1},
+        // CHANNEL_LAYOUT_6_1_BACK
+        {0, 1, 2, 3, 4, 5, -1, -1, 6, -1, -1},
 
-    // CHANNEL_LAYOUT_6_1_FRONT
-    {0, 1, -1, 6, -1, -1, 4, 5, -1, 2, 3},
+        // CHANNEL_LAYOUT_6_1_FRONT
+        {0, 1, -1, 6, -1, -1, 4, 5, -1, 2, 3},
 
-    // CHANNEL_LAYOUT_7_0_FRONT
-    {0, 1, 2, -1, -1, -1, 5, 6, -1, 3, 4},
+        // CHANNEL_LAYOUT_7_0_FRONT
+        {0, 1, 2, -1, -1, -1, 5, 6, -1, 3, 4},
 
-    // CHANNEL_LAYOUT_7_1_WIDE_BACK
-    {0, 1, 2, 3, 4, 5, 6, 7, -1, -1, -1},
+        // CHANNEL_LAYOUT_7_1_WIDE_BACK
+        {0, 1, 2, 3, 4, 5, 6, 7, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_OCTAGONAL
-    {0, 1, 2, -1, 5, 6, -1, -1, 7, 3, 4},
+        // CHANNEL_LAYOUT_OCTAGONAL
+        {0, 1, 2, -1, 5, 6, -1, -1, 7, 3, 4},
 
-    // CHANNEL_LAYOUT_DISCRETE
-    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_DISCRETE
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_STEREO_AND_KEYBOARD_MIC
-    {0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_STEREO_AND_KEYBOARD_MIC
+        {0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // CHANNEL_LAYOUT_4_1_QUAD_SIDE
-    {0, 1, -1, 4, -1, -1, -1, -1, -1, 2, 3},
+        // CHANNEL_LAYOUT_4_1_QUAD_SIDE
+        {0, 1, -1, 4, -1, -1, -1, -1, -1, 2, 3},
 
-    // CHANNEL_LAYOUT_BITSTREAM
-    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+        // CHANNEL_LAYOUT_BITSTREAM
+        {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
-    // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
-};
+        // FL | FR | FC | LFE | BL | BR | FLofC | FRofC | BC | SL | SR
+    }};
 
 int ChannelLayoutToChannelCount(ChannelLayout layout) {
-  AVE_DCHECK_LT(static_cast<size_t>(layout), arraysize(kLayoutToChannels));
+  AVE_DCHECK_LT(static_cast<size_t>(layout), kLayoutToChannels.size());
   AVE_DCHECK_LE(kLayoutToChannels[layout], kMaxConcurrentChannels);
   return kLayoutToChannels[layout];
 }
@@ -193,8 +197,8 @@ ChannelLayout GuessChannelLayout(int channels) {
 }
 
 int ChannelOrder(ChannelLayout layout, Channels channel) {
-  AVE_DCHECK_LT(static_cast<size_t>(layout), arraysize(kChannelOrderings));
-  AVE_DCHECK_LT(static_cast<size_t>(channel), arraysize(kChannelOrderings[0]));
+  AVE_DCHECK_LT(static_cast<size_t>(layout), kChannelOrderings.size());
+  AVE_DCHECK_LT(static_cast<size_t>(channel), kChannelOrderings[0].size());
   return kChannelOrderings[layout][channel];
 }
 

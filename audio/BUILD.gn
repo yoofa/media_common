@@ -1,6 +1,20 @@
+import("//base/build/ave.gni")
+
+ave_library("audio") {
+  deps = [ ":audio_channel_layout" ]
+}
+
+ave_library("audio_format") {
+  sources = [ "audio_format.h" ]
+}
+
 ave_library("audio_channel_layout") {
   sources = [
     "channel_layout.cc",
     "channel_layout.h",
   ]
+}
+
+ave_library("audio_device") {
+  sources = [ "./audio_device_factory.h" ]
 }

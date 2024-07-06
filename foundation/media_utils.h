@@ -14,6 +14,7 @@
 #include "pixel_format.h"
 
 namespace ave {
+namespace media {
 
 enum class MediaType {
   UNKNOWN = -1,  ///< Usually treated as MEDIA_TYPE_DATA
@@ -64,5 +65,6 @@ struct VideoSampleInfo {
   int16_t qp = -1;
 };
 
+}  // namespace media
 }  // namespace ave
 #endif /* !MEDIA_UTILS_H */
