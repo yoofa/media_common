@@ -12,10 +12,10 @@
 
 #include "base/errors.h"
 
-#include "..//foundation/message.h"
-#include "..//video/video_render.h"
 #include "../crypto/crypto.h"
 #include "../foundation/media_utils.h"
+#include "../foundation/message.h"
+#include "../video/video_render.h"
 
 #include "codec_buffer.h"
 

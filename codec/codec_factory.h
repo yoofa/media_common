@@ -12,8 +12,9 @@
 #include <string>
 
 #include "base/errors.h"
+
 #include "codec.h"
-#include "media/codec_id.h"
+#include "codec_id.h"
 
 namespace ave {
 namespace media {

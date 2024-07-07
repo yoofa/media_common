@@ -8,7 +8,8 @@
 #ifndef AUDIO_CODEC_PROPERTY_H
 #define AUDIO_CODEC_PROPERTY_H
 
-#include "base/types.h"
+#include <cstddef>
+#include <cstdint>
 
 #include "codec_id.h"
 

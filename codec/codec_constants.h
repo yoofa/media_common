@@ -10,7 +10,8 @@
 
 #include <sys/types.h>
 
-namespace {
+namespace ave {
+namespace media {
 
 constexpr int32_t AVCProfileBaseline = 0x01;
 constexpr int32_t AVCProfileMain = 0x02;
@@ -987,6 +988,7 @@ inline static const char* asString_ColorFormat(int32_t i,
   }
 }
 
+// NOLINTBEGIN(modernize-avoid-c-arrays)
 constexpr char FEATURE_AdaptivePlayback[] = "adaptive-playback";
 constexpr char FEATURE_EncodingStatistics[] = "encoding-statistics";
 constexpr char FEATURE_IntraRefresh[] = "intra-refresh";
@@ -1030,6 +1032,7 @@ constexpr char MIMETYPE_TEXT_CEA_608[] = "text/cea-608";
 constexpr char MIMETYPE_TEXT_CEA_708[] = "text/cea-708";
 constexpr char MIMETYPE_TEXT_SUBRIP[] = "application/x-subrip";
 constexpr char MIMETYPE_TEXT_VTT[] = "text/vtt";
+// NOLINTEND(modernize-avoid-c-arrays)
 
 constexpr int32_t COLOR_RANGE_FULL = 1;
 constexpr int32_t COLOR_RANGE_LIMITED = 2;
@@ -1050,6 +1053,7 @@ constexpr int32_t PICTURE_TYPE_UNKNOWN = 0;
 constexpr int32_t VIDEO_ENCODING_STATISTICS_LEVEL_1 = 1;
 constexpr int32_t VIDEO_ENCODING_STATISTICS_LEVEL_NONE = 0;
 
+// NOLINTBEGIN(modernize-avoid-c-arrays)
 constexpr char KEY_AAC_DRC_ALBUM_MODE[] = "aac-drc-album-mode";
 constexpr char KEY_AAC_DRC_ATTENUATION_FACTOR[] = "aac-drc-cut-level";
 constexpr char KEY_AAC_DRC_BOOST_FACTOR[] = "aac-drc-boost-level";
@@ -1143,6 +1147,7 @@ constexpr char KEY_VIDEO_QP_MIN[] = "video-qp-min";
 constexpr char KEY_VIDEO_QP_P_MAX[] = "video-qp-p-max";
 constexpr char KEY_VIDEO_QP_P_MIN[] = "video-qp-p-min";
 constexpr char KEY_WIDTH[] = "width";
+// NOLINTEND(modernize-avoid-c-arrays)
 
 // from MediaCodec.java
 constexpr int32_t ERROR_INSUFFICIENT_OUTPUT_PROTECTION = 4;
@@ -1153,6 +1158,8 @@ constexpr int32_t ERROR_RECLAIMED = 1101;
 constexpr int32_t ERROR_RESOURCE_BUSY = 3;
 constexpr int32_t ERROR_SESSION_NOT_OPENED = 5;
 constexpr int32_t ERROR_UNSUPPORTED_OPERATION = 6;
+
+// NOLINTBEGIN(modernize-avoid-c-arrays)
 constexpr char CODEC[] = "android.media.mediacodec.codec";
 constexpr char ENCODER[] = "android.media.mediacodec.encoder";
 constexpr char HEIGHT[] = "android.media.mediacodec.height";
@@ -1163,6 +1170,7 @@ constexpr char MODE_VIDEO[] = "video";
 constexpr char ROTATION[] = "android.media.mediacodec.rotation";
 constexpr char SECURE[] = "android.media.mediacodec.secure";
 constexpr char WIDTH[] = "android.media.mediacodec.width";
+// NOLINTEND(modernize-avoid-c-arrays)
 
 constexpr int32_t BUFFER_FLAG_CODEC_CONFIG = 2;
 constexpr int32_t BUFFER_FLAG_END_OF_STREAM = 4;
@@ -1179,12 +1187,16 @@ constexpr int32_t INFO_OUTPUT_FORMAT_CHANGED = -2;
 constexpr int32_t INFO_TRY_AGAIN_LATER = -1;
 constexpr int32_t VIDEO_SCALING_MODE_SCALE_TO_FIT = 1;
 constexpr int32_t VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING = 2;
+
+// NOLINTBEGIN(modernize-avoid-c-arrays)
 constexpr char PARAMETER_KEY_OFFSET_TIME[] = "time-offset-us";
 constexpr char PARAMETER_KEY_REQUEST_SYNC_FRAME[] = "request-sync";
 constexpr char PARAMETER_KEY_SUSPEND[] = "drop-input-frames";
 constexpr char PARAMETER_KEY_SUSPEND_TIME[] = "drop-start-time-us";
 constexpr char PARAMETER_KEY_TUNNEL_PEEK[] = "tunnel-peek";
 constexpr char PARAMETER_KEY_VIDEO_BITRATE[] = "video-bitrate";
+// NOLINTEND(modernize-avoid-c-arrays)
 
-}  // namespace
+}  // namespace media
+}  // namespace ave
 #endif /* !CODEC_CONSTANTS_H */

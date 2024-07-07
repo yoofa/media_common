@@ -13,6 +13,7 @@ namespace ave {
 namespace media {
 
 namespace {
+// NOLINTBEGIN(modernize-avoid-c-arrays)
 constexpr char kPayloadNameVp8[] = "VP8";
 constexpr char kPayloadNameVp9[] = "VP9";
 constexpr char kPayloadNameAv1[] = "AV1X";
@@ -20,6 +21,7 @@ constexpr char kPayloadNameH264[] = "H264";
 constexpr char kPayloadNameH265[] = "H265";
 constexpr char kPayloadNameGeneric[] = "Generic";
 // constexpr char kPayloadNameMultiplex[] = "Multiplex";
+// NOLINTEND(modernize-avoid-c-arrays)
 }  // namespace
 
 VideoCodecProperty::VideoCodecProperty()

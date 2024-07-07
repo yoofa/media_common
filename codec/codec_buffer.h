@@ -16,7 +16,7 @@ namespace media {
 class CodecBuffer : public Buffer {
  public:
   CodecBuffer(size_t capacity);
-  virtual ~CodecBuffer();
+  ~CodecBuffer() override;
 
  private:
 };
