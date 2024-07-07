@@ -8,11 +8,10 @@
 #ifndef AVC_UTILS_H
 #define AVC_UTILS_H
 
-#include "base/types.h"
-
 #include "buffer.h"
 
 namespace ave {
+namespace media {
 
 #define NELEM(x) ((int)(sizeof(x) / sizeof((x)[0])))
 
@@ -38,8 +37,8 @@ struct NALPosition {
 void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
                        int32_t* width,
                        int32_t* height,
-                       int32_t* sarWidth = NULL,
-                       int32_t* sarHeight = NULL);
+                       int32_t* sarWidth = nullptr,
+                       int32_t* sarHeight = nullptr);
 
 // Gets and returns an unsigned exp-golomb (ue) value from a bit reader |br|.
 // Aborts if the value is more than 64 bits long (>=0xFFFF (!)) or the bit
@@ -101,10 +100,11 @@ bool ExtractDimensionsFromVOLHeader(const uint8_t* data,
 
 bool GetMPEGAudioFrameSize(uint32_t header,
                            size_t* frame_size,
-                           int* out_sampling_rate = NULL,
-                           int* out_channels = NULL,
-                           int* out_bitrate = NULL,
-                           int* out_num_samples = NULL);
+                           int* out_sampling_rate = nullptr,
+                           int* out_channels = nullptr,
+                           int* out_bitrate = nullptr,
+                           int* out_num_samples = nullptr);
+}  // namespace media
 } /* namespace ave */
 
 #endif /* !AVC_UTILS_H */

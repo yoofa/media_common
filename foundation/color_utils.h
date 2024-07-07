@@ -8,12 +8,13 @@
 #ifndef COLOR_UTILS_H
 #define COLOR_UTILS_H
 
-#include "base/types.h"
+#include <cstdint>
 
-#include "..//hardware/video_api.h"
+#include "../hardware/video_api.h"
 #include "message.h"
 
 namespace ave {
+namespace media {
 
 struct ColorUtils {
   /*
@@ -296,6 +297,7 @@ inline static const char* asString(ave::ColorUtils::ColorRange i,
       return def;
   }
 }
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave
 
 #endif /* !COLOR_UTILS_H */

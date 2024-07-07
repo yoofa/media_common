@@ -22,8 +22,8 @@ class Buffer {
   Buffer(size_t capacity);
   Buffer(void* data, size_t capacity);
 
-  uint8_t* base() { return (uint8_t*)data_; }
-  uint8_t* data() { return (uint8_t*)data_ + range_offset_; }
+  uint8_t* base() { return static_cast<uint8_t*>(data_); }
+  uint8_t* data() { return static_cast<uint8_t*>(data_) + range_offset_; }
   size_t capacity() const { return capacity_; }
   size_t size() const { return range_length_; }
   size_t offset() const { return range_offset_; }

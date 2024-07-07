@@ -41,9 +41,9 @@ std::shared_ptr<Buffer> Buffer::CreateAsCopy(const void* data,
 
 Buffer::~Buffer() {
   if (owns_data_) {
-    if (data_ != NULL) {
+    if (data_ != nullptr) {
       free(data_);
-      data_ = NULL;
+      data_ = nullptr;
     }
   }
 }
@@ -57,7 +57,7 @@ void Buffer::setRange(size_t offset, size_t size) {
 }
 
 std::shared_ptr<Message> Buffer::meta() {
-  if (meta_.get() == nullptr) {
+  if (meta_ == nullptr) {
     meta_ = std::make_shared<Message>();
   }
   return meta_;

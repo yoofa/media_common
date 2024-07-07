@@ -11,9 +11,10 @@
 #ifndef VIDEO_API_H
 #define VIDEO_API_H
 
-#include <string.h>
+#include <cstdint>
+#include <cstring>
 
-#include "base/types.h"
+#include <array>
 
 namespace ave {
 
@@ -45,7 +46,7 @@ struct MediaImage {
     uint32_t mVertSubsampling;   // subsampling compared to the largest plane
   };
 
-  PlaneInfo mPlane[MAX_NUM_PLANES];
+  std::array<PlaneInfo, MAX_NUM_PLANES> mPlane;
 };
 
 /**
@@ -88,7 +89,7 @@ struct __attribute__((__packed__)) MediaImage2 {
     uint32_t mHorizSubsampling;  // subsampling compared to the largest plane
     uint32_t mVertSubsampling;   // subsampling compared to the largest plane
   };
-  PlaneInfo mPlane[MAX_NUM_PLANES];
+  std::array<PlaneInfo, MAX_NUM_PLANES> mPlane;
 
   void initFromV1(const MediaImage&);  // for internal use only
 };

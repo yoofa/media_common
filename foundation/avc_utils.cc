@@ -7,14 +7,16 @@
 
 #include "avc_utils.h"
 
-#include <utility>
+#include <cstdint>
 
 #include "base/checks.h"
+#include "base/errors.h"
 #include "base/logging.h"
 
 #include "bit_reader.h"
 
 namespace ave {
+namespace media {
 
 unsigned parseUE(BitReader* br) {
   unsigned numZeroes = 0;
@@ -29,20 +31,19 @@ unsigned parseUE(BitReader* br) {
 
 unsigned parseUEWithFallback(BitReader* br, unsigned fallback) {
   unsigned numZeroes = 0;
-  while (br->getBitsWithFallback(1, 1) == 0) {
+  while (br->getBitsWithFallback(1, static_cast<uint32_t>(1)) == 0) {
     ++numZeroes;
   }
-  uint32_t x;
+  auto x = static_cast<uint32_t>(0);
   if (numZeroes < 32) {
     if (br->getBitsGraceful(numZeroes, &x)) {
       return x + (1u << numZeroes) - 1;
-    } else {
-      return fallback;
     }
-  } else {
-    br->skipBits(numZeroes);
     return fallback;
   }
+
+  br->skipBits(numZeroes);
+  return fallback;
 }
 
 signed parseSE(BitReader* br) {
@@ -186,7 +187,7 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
     unsigned frame_crop_top_offset = parseUE(&br);
     unsigned frame_crop_bottom_offset = parseUE(&br);
 
-    unsigned cropUnitX, cropUnitY;
+    unsigned cropUnitX = 0, cropUnitY = 0;
     if (chroma_format_idc == 0 /* monochrome */) {
       cropUnitX = 1;
       cropUnitY = 2 - frame_mbs_only_flag;
@@ -228,11 +229,11 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
     }
   }
 
-  if (sarWidth != NULL) {
+  if (sarWidth != nullptr) {
     *sarWidth = 0;
   }
 
-  if (sarHeight != NULL) {
+  if (sarHeight != nullptr) {
     *sarHeight = 0;
   }
 
@@ -246,6 +247,7 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
         sar_width = br.getBits(16);
         sar_height = br.getBits(16);
       } else {
+        // NOLINTBEGIN(modernize-avoid-c-arrays)
         static const struct {
           unsigned width, height;
         } kFixedSARs[] = {
@@ -254,6 +256,7 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
             {20, 11},  {32, 11}, {80, 33}, {18, 11}, {15, 11}, {64, 33},
             {160, 99}, {4, 3},   {3, 2},   {2, 1},
         };
+        // NOLINTEND(modernize-avoid-c-arrays)
 
         if (aspect_ratio_idc > 0 && aspect_ratio_idc < NELEM(kFixedSARs)) {
           sar_width = kFixedSARs[aspect_ratio_idc].width;
@@ -265,12 +268,12 @@ void FindAVCDimensions(const std::shared_ptr<Buffer>& seqParamSet,
     AVE_LOG(LS_VERBOSE) << "sample aspect ratio = " << sar_width << " : "
                         << sar_height;
 
-    if (sarWidth != NULL) {
-      *sarWidth = sar_width;
+    if (sarWidth != nullptr) {
+      *sarWidth = static_cast<int32_t>(sar_width);
     }
 
-    if (sarHeight != NULL) {
-      *sarHeight = sar_height;
+    if (sarHeight != nullptr) {
+      *sarHeight = static_cast<int32_t>(sar_height);
     }
   }
 }
@@ -283,11 +286,11 @@ status_t getNextNALUnit(const uint8_t** _data,
   const uint8_t* data = *_data;
   size_t size = *_size;
 
-  *nalStart = NULL;
+  *nalStart = nullptr;
   *nalSize = 0;
 
   if (size < 3) {
-    return -EAGAIN;
+    return ave::E_AGAIN;
   }
 
   size_t offset = 0;
@@ -302,7 +305,7 @@ status_t getNextNALUnit(const uint8_t** _data,
   if (offset + 2 >= size) {
     *_data = &data[offset];
     *_size = 2;
-    return -EAGAIN;
+    return ave::E_AGAIN;
   }
   offset += 3;
 
@@ -319,7 +322,7 @@ status_t getNextNALUnit(const uint8_t** _data,
         break;
       }
 
-      return -EAGAIN;
+      return ave::E_AGAIN;
     }
 
     if (data[offset - 1] == 0x00 && data[offset - 2] == 0x00) {
@@ -341,7 +344,7 @@ status_t getNextNALUnit(const uint8_t** _data,
     *_data = &data[offset - 2];
     *_size = size - offset + 2;
   } else {
-    *_data = NULL;
+    *_data = nullptr;
     *_size = 0;
   }
 
@@ -351,8 +354,8 @@ status_t getNextNALUnit(const uint8_t** _data,
 static std::shared_ptr<Buffer> FindNAL(const uint8_t* data,
                                        size_t size,
                                        unsigned nalType) {
-  const uint8_t* nalStart;
-  size_t nalSize;
+  const uint8_t* nalStart = nullptr;
+  size_t nalSize = 0;
   while (getNextNALUnit(&data, &size, &nalStart, &nalSize, true) == OK) {
     if (nalSize > 0 && (nalStart[0] & 0x1f) == nalType) {
       auto buffer = std::make_shared<Buffer>(nalSize);
@@ -361,7 +364,7 @@ static std::shared_ptr<Buffer> FindNAL(const uint8_t* data,
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 const char* AVCProfileToString(uint8_t profile) {
@@ -397,14 +400,14 @@ std::shared_ptr<Buffer> MakeAVCCodecSpecificData(
   size_t size = accessUnit->size();
 
   std::shared_ptr<Buffer> seqParamSet = FindNAL(data, size, 7);
-  if (seqParamSet == NULL) {
-    return NULL;
+  if (seqParamSet == nullptr) {
+    return nullptr;
   }
 
   FindAVCDimensions(seqParamSet, width, height, sarWidth, sarHeight);
 
   std::shared_ptr<Buffer> picParamSet = FindNAL(data, size, 8);
-  AVE_CHECK(picParamSet != NULL);
+  AVE_CHECK(picParamSet != nullptr);
 
   size_t csdSize = 1 + 3 + 1 + 1 + 2 * 1 + seqParamSet->size() + 1 + 2 * 1 +
                    picParamSet->size();
@@ -463,8 +466,8 @@ bool IsIDR(const uint8_t* data, size_t size) {
   //    size_t size = buffer->size();
   bool foundIDR = false;
 
-  const uint8_t* nalStart;
-  size_t nalSize;
+  const uint8_t* nalStart = nullptr;
+  size_t nalSize = 0;
   while (getNextNALUnit(&data, &size, &nalStart, &nalSize, true) == OK) {
     if (nalSize == 0u) {
       AVE_LOG(LS_WARNING)
@@ -486,14 +489,14 @@ bool IsIDR(const uint8_t* data, size_t size) {
 bool IsAVCReferenceFrame(const std::shared_ptr<Buffer>& accessUnit) {
   const uint8_t* data = accessUnit->data();
   size_t size = accessUnit->size();
-  if (data == NULL) {
+  if (data == nullptr) {
     AVE_LOG(LS_ERROR) << "IsAVCReferenceFrame: called on NULL data ("
                       << accessUnit.get() << ", " << size << ")";
     return false;
   }
 
-  const uint8_t* nalStart;
-  size_t nalSize;
+  const uint8_t* nalStart = nullptr;
+  size_t nalSize = 0;
   while (getNextNALUnit(&data, &size, &nalStart, &nalSize, true) == OK) {
     if (nalSize == 0) {
       AVE_LOG(LS_ERROR) << "IsAVCReferenceFrame: invalid nalSize: 0 ("
@@ -505,17 +508,16 @@ bool IsAVCReferenceFrame(const std::shared_ptr<Buffer>& accessUnit) {
 
     if (nalType == 5) {
       return true;
-    } else if (nalType == 1) {
-      unsigned nal_ref_idc = (nalStart[0] >> 5) & 3;
-      return nal_ref_idc != 0;
     }
+    unsigned nal_ref_idc = (nalStart[0] >> 5) & 3;
+    return nal_ref_idc != 0;
   }
 
   return true;
 }
 
 uint32_t FindAVCLayerId(const uint8_t* data, size_t size) {
-  AVE_CHECK(data != NULL);
+  AVE_CHECK(data != nullptr);
 
   const unsigned kSvcNalType = 0xE;
   const unsigned kSvcNalSearchRange = 32;
@@ -527,11 +529,11 @@ uint32_t FindAVCLayerId(const uint8_t* data, size_t size) {
   // layer_id 0 is for base layer, while 1, 2, ... are enhancement layers.
   // Layer n uses reference frames from layer 0, 1, ..., n-1.
 
-  uint32_t layerId = 0;
+  auto layerId = static_cast<uint32_t>(0);
   std::shared_ptr<Buffer> svcNAL = FindNAL(
       data, size > kSvcNalSearchRange ? kSvcNalSearchRange : size, kSvcNalType);
-  if (svcNAL != NULL && svcNAL->size() >= 4) {
-    layerId = (*(svcNAL->data() + 3) >> 5) & 0x7;
+  if (svcNAL != nullptr && svcNAL->size() >= 4) {
+    layerId = static_cast<uint32_t>((*(svcNAL->data() + 3) >> 5) & 0x7);
   }
   return layerId;
 }
@@ -610,8 +612,8 @@ bool ExtractDimensionsFromVOLHeader(const uint8_t* data,
 
   br.skipBits(1);  // interlaced
 
-  *width = video_object_layer_width;
-  *height = video_object_layer_height;
+  *width = static_cast<uint32_t>(video_object_layer_width);
+  *height = static_cast<uint32_t>(video_object_layer_height);
 
   return true;
 }
@@ -671,7 +673,9 @@ bool GetMPEGAudioFrameSize(uint32_t header,
     return false;
   }
 
+  // NOLINTBEGIN(modernize-avoid-c-arrays)
   static const int kSamplingRateV1[] = {44100, 48000, 32000};
+  // NOLINTEND(modernize-avoid-c-arrays)
   int sampling_rate = kSamplingRateV1[sampling_rate_index];
   if (version == 2 /* V2 */) {
     sampling_rate /= 2;
@@ -683,10 +687,12 @@ bool GetMPEGAudioFrameSize(uint32_t header,
 
   if (layer == 3) {
     // layer I
+    // NOLINTBEGIN(modernize-avoid-c-arrays)
     static const int kBitrateV1[] = {32,  64,  96,  128, 160, 192, 224,
                                      256, 288, 320, 352, 384, 416, 448};
     static const int kBitrateV2[] = {32,  48,  56,  64,  80,  96,  112,
                                      128, 144, 160, 176, 192, 224, 256};
+    // NOLINTEND(modernize-avoid-c-arrays)
 
     int bitrate = (version == 3 /* V1 */) ? kBitrateV1[bitrate_index - 1]
                                           : kBitrateV2[bitrate_index - 1];
@@ -702,7 +708,7 @@ bool GetMPEGAudioFrameSize(uint32_t header,
     }
   } else {
     // layer II or III
-
+    // NOLINTBEGIN(modernize-avoid-c-arrays)
     static const int kBitrateV1L2[] = {32,  48,  56,  64,  80,  96,  112,
                                        128, 160, 192, 224, 256, 320, 384};
 
@@ -711,8 +717,9 @@ bool GetMPEGAudioFrameSize(uint32_t header,
 
     static const int kBitrateV2[] = {8,  16, 24, 32,  40,  48,  56,
                                      64, 80, 96, 112, 128, 144, 160};
+    // NOLINTEND(modernize-avoid-c-arrays)
 
-    int bitrate;
+    int bitrate = 0;
     if (version == 3 /* V1 */) {
       bitrate = (layer == 2 /* L2 */) ? kBitrateV1L2[bitrate_index - 1]
                                       : kBitrateV1L3[bitrate_index - 1];
@@ -753,4 +760,5 @@ bool GetMPEGAudioFrameSize(uint32_t header,
 
   return true;
 }
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave

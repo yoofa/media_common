@@ -10,6 +10,7 @@
 #include "base/checks.h"
 
 namespace ave {
+namespace media {
 
 BitReader::BitReader(const uint8_t* data, size_t size)
     : mData(data),
@@ -18,7 +19,7 @@ BitReader::BitReader(const uint8_t* data, size_t size)
       mNumBitsLeft(0),
       mOverRead(false) {}
 
-BitReader::~BitReader() {}
+BitReader::~BitReader() = default;
 
 bool BitReader::fillReservoir() {
   if (mSize == 0) {
@@ -27,7 +28,7 @@ bool BitReader::fillReservoir() {
   }
 
   mReservoir = 0;
-  size_t i;
+  size_t i = 0;
   for (i = 0; mSize > 0 && i < 4; ++i) {
     mReservoir = (mReservoir << 8) | *mData;
 
@@ -41,7 +42,7 @@ bool BitReader::fillReservoir() {
 }
 
 uint32_t BitReader::getBits(size_t n) {
-  uint32_t ret;
+  uint32_t ret = 0;
   AVE_CHECK(getBitsGraceful(n, &ret));
   return ret;
 }
@@ -82,7 +83,7 @@ bool BitReader::getBitsGraceful(size_t n, uint32_t* out) {
 }
 
 bool BitReader::skipBits(size_t n) {
-  uint32_t dummy;
+  uint32_t dummy = 0;
   while (n > 32) {
     if (!getBitsGraceful(32, &dummy)) {
       return false;
@@ -131,7 +132,8 @@ bool NALBitReader::atLeastNumBitsLeft(size_t n) const {
     return false;
   }
 
-  ssize_t numBitsRemaining = (ssize_t)n - (ssize_t)mNumBitsLeft;
+  ssize_t numBitsRemaining =
+      static_cast<ssize_t>(n) - static_cast<ssize_t>(mNumBitsLeft);
 
   size_t size = mSize;
   const uint8_t* data = mData;
@@ -187,4 +189,5 @@ bool NALBitReader::fillReservoir() {
   mReservoir <<= 32 - mNumBitsLeft;
   return true;
 }
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave

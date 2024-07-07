@@ -14,10 +14,11 @@
 #include "buffer.h"
 
 namespace ave {
+namespace media {
 
 // shortcut names for brevity in the following tables
-typedef ColorAspects CA;
-typedef ColorUtils CU;
+using CA = ColorAspects;
+using CU = ColorUtils;
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
 #define LO_UINT16(a) ((a) & 0xFF)
@@ -83,10 +84,13 @@ static bool isDefined(ColorAspects::MatrixCoeffs c) {
 int32_t ColorUtils::wrapColorAspectsIntoColorStandard(
     ColorAspects::Primaries primaries,
     ColorAspects::MatrixCoeffs coeffs) {
-  ColorStandard res;
+  ColorStandard res = kColorStandardUnspecified;
+
   if (sStandards.map(std::make_pair(primaries, coeffs), &res)) {
     return res;
-  } else if (!isValid(primaries) || !isValid(coeffs)) {
+  }
+
+  if (!isValid(primaries) || !isValid(coeffs)) {
     return kColorStandardUnspecified;
   }
 
@@ -94,9 +98,8 @@ int32_t ColorUtils::wrapColorAspectsIntoColorStandard(
   uint32_t numPrimaries = ColorAspects::PrimariesBT2020 + 1;
   if (isDefined(primaries) && isDefined(coeffs)) {
     return kColorStandardExtendedStart + primaries + coeffs * numPrimaries;
-  } else {
-    return kColorStandardVendorStart + primaries + coeffs * 0x100;
   }
+  return kColorStandardVendorStart + primaries + coeffs * 0x100;
 }
 
 // static
@@ -889,4 +892,5 @@ bool ColorUtils::isHDRStaticInfoValid(HDRStaticInfo* info) {
   return false;
 }
 
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave

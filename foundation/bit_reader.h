@@ -8,10 +8,13 @@
 #ifndef BIT_READER_H
 #define BIT_READER_H
 
+#include <cstddef>
+#include <cstdint>
+
 #include "base/constructor_magic.h"
-#include "base/types.h"
 
 namespace ave {
+namespace media {
 
 class BitReader {
  public:
@@ -71,10 +74,11 @@ class NALBitReader : public BitReader {
  private:
   int32_t mNumZeros;
 
-  virtual bool fillReservoir();
+  bool fillReservoir() override;
 
   AVE_DISALLOW_COPY_AND_ASSIGN(NALBitReader);
 };
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave
 
 #endif /* !BIT_READER_H */
