@@ -10,8 +10,12 @@
 
 #include <memory>
 
+#include "base/errors.h"
+
 namespace ave {
 namespace media {
+
+struct AudioDeviceInfo {};
 
 class AudioTrack;
 class AudioRecord;
@@ -25,9 +29,16 @@ class AudioDeviceFactory {
   // create an AudioRecord object.
   virtual std::shared_ptr<AudioRecord> createAudioRecord() = 0;
 
+  // get supported audio devices
+  // return <device_id, device_info>
+  virtual std::vector<std::pair<int, AudioDeviceInfo>>
+  getSupportedAudioDevices() = 0;
+
   // set audio input device
+  virtual status_t setAudioInputDevice(int device_id) = 0;
 
   // set audio output device
+  virtual status_t setAudioOutputDevice(int device_id) = 0;
 };
 
 }  // namespace media
