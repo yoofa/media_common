@@ -1,7 +1,20 @@
 import("//base/build/ave.gni")
 
 ave_library("audio") {
-  deps = [ ":audio_channel_layout" ]
+  deps = [
+    ":audio_base",
+    ":audio_device",
+    ":default_audio_device_factory",
+  ]
+}
+
+# audio base
+ave_source_set("audio_base") {
+  sources = [ "audio.h" ]
+  deps = [
+    ":audio_channel_layout",
+    ":audio_format",
+  ]
 }
 
 ave_library("audio_format") {
@@ -15,6 +28,38 @@ ave_library("audio_channel_layout") {
   ]
 }
 
+# audio device
 ave_library("audio_device") {
-  sources = [ "./audio_device_factory.h" ]
+  sources = [
+    "audio_device_factory.h",
+    "audio_record.h",
+    "audio_track.h",
+  ]
+  deps = [ ":audio_base" ]
+}
+
+ave_library("alsa_audio_device") {
+  sources = [
+    "alsa/alsa_audio_device_factory.cc",
+    "alsa/alsa_audio_device_factory.h",
+    "alsa/alsa_audio_record.cc",
+    "alsa/alsa_audio_record.h",
+    "alsa/alsa_audio_track.cc",
+    "alsa/alsa_audio_track.h",
+  ]
+  deps = [
+    ":audio_base",
+    ":audio_device",
+  ]
+}
+
+ave_library("default_audio_device_factory") {
+  sources = [
+    "default_audio_device_factory.cc",
+    "default_audio_device_factory.h",
+  ]
+  deps = [
+    ":alsa_audio_device",
+    ":audio_device",
+  ]
 }
