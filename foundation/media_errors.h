@@ -13,6 +13,7 @@
 #include "base/errors.h"
 
 namespace ave {
+namespace media {
 
 enum {
   // status_t map for errors in the media framework
@@ -211,6 +212,7 @@ static inline std::string StrCryptoError(status_t err) {
   }
   return StatusToString(err);
 }
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave
 
 #endif /* !MEDIA_ERRORS_H */

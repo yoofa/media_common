@@ -15,6 +15,7 @@
 #include "message.h"
 
 namespace ave {
+namespace media {
 
 HandlerRoster::HandlerRoster() : next_handler_id_(1) {}
 
@@ -30,7 +31,7 @@ Looper::handler_id HandlerRoster::registerHandler(
   info.looper_ = looper;
   info.handler_ = handler;
   Looper::handler_id handlerId = next_handler_id_++;
-  handlers_.emplace(std::make_pair(handlerId, info));
+  handlers_.emplace(handlerId, info);
 
   handler->setId(handlerId, looper);
 
@@ -44,7 +45,7 @@ void HandlerRoster::unregisterHandler(Looper::handler_id handlerId) {
   if (it != handlers_.end()) {
     HandlerInfo info = it->second;
     std::shared_ptr<Handler> handler = info.handler_.lock();
-    if (handler.get() != nullptr) {
+    if (handler != nullptr) {
       handler->setId(0, std::weak_ptr<Looper>());
     }
 
@@ -52,4 +53,5 @@ void HandlerRoster::unregisterHandler(Looper::handler_id handlerId) {
   }
 }
 
+}  // namespace media
 }  // namespace ave

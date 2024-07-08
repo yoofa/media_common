@@ -11,6 +11,7 @@
 #include "base/logging.h"
 
 namespace ave {
+namespace media {
 
 ESDS::ESDS(const void* data, size_t size)
     : mData(new uint8_t[size]),
@@ -18,7 +19,10 @@ ESDS::ESDS(const void* data, size_t size)
       mInitCheck(NO_INIT),
       mDecoderSpecificOffset(0),
       mDecoderSpecificLength(0),
-      mObjectTypeIndication(0) {
+      mObjectTypeIndication(0),
+      mStreamType(0),
+      mBitRateMax(static_cast<uint32_t>(0)),
+      mBitRateAvg(static_cast<uint32_t>(0)) {
   memcpy(mData, data, size);
 
   mInitCheck = parse();
@@ -26,7 +30,6 @@ ESDS::ESDS(const void* data, size_t size)
 
 ESDS::~ESDS() {
   delete[] mData;
-  mData = NULL;
 }
 
 status_t ESDS::InitCheck() const {
@@ -67,7 +70,7 @@ status_t ESDS::skipDescriptorHeader(size_t offset,
   --size;
 
   *data_size = 0;
-  bool more;
+  bool more = false;
   do {
     if (size == 0) {
       return ERROR_MALFORMED;
@@ -92,9 +95,9 @@ status_t ESDS::skipDescriptorHeader(size_t offset,
 }
 
 status_t ESDS::parse() {
-  uint8_t tag;
-  size_t data_offset;
-  size_t data_size;
+  uint8_t tag = 0;
+  size_t data_offset = 0;
+  size_t data_size = 0;
   status_t err = skipDescriptorHeader(0, mSize, &tag, &data_offset, &data_size);
 
   if (err != OK) {
@@ -124,8 +127,9 @@ status_t ESDS::parseESDescriptor(size_t offset, size_t size) {
   --size;
 
   if (streamDependenceFlag) {
-    if (size < 2)
+    if (size < 2) {
       return ERROR_MALFORMED;
+    }
     offset += 2;
     size -= 2;
   }
@@ -135,15 +139,17 @@ status_t ESDS::parseESDescriptor(size_t offset, size_t size) {
       return ERROR_MALFORMED;
     }
     unsigned URLlength = mData[offset];
-    if (URLlength >= size)
+    if (URLlength >= size) {
       return ERROR_MALFORMED;
+    }
     offset += URLlength + 1;
     size -= URLlength + 1;
   }
 
   if (OCRstreamFlag) {
-    if (size < 2)
+    if (size < 2) {
       return ERROR_MALFORMED;
+    }
     offset += 2;
     size -= 2;
 
@@ -165,8 +171,8 @@ status_t ESDS::parseESDescriptor(size_t offset, size_t size) {
     return ERROR_MALFORMED;
   }
 
-  uint8_t tag;
-  size_t sub_offset, sub_size;
+  uint8_t tag = 0;
+  size_t sub_offset = 0, sub_size = 0;
   status_t err =
       skipDescriptorHeader(offset, size, &tag, &sub_offset, &sub_size);
 
@@ -212,8 +218,8 @@ status_t ESDS::parseDecoderConfigDescriptor(size_t offset, size_t size) {
     return OK;
   }
 
-  uint8_t tag;
-  size_t sub_offset, sub_size;
+  uint8_t tag = 0;
+  size_t sub_offset = 0, sub_size = 0;
   status_t err =
       skipDescriptorHeader(offset, size, &tag, &sub_offset, &sub_size);
 
@@ -230,4 +236,5 @@ status_t ESDS::parseDecoderConfigDescriptor(size_t offset, size_t size) {
 
   return OK;
 }
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave

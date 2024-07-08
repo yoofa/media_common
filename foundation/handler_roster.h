@@ -16,6 +16,7 @@
 #include "looper.h"
 
 namespace ave {
+namespace media {
 
 class HandlerRoster {
  public:
@@ -41,6 +42,7 @@ class HandlerRoster {
   AVE_DISALLOW_COPY_AND_ASSIGN(HandlerRoster);
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AVE_HANDLERROSTER_H */

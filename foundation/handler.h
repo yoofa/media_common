@@ -14,12 +14,13 @@
 #include "looper.h"
 
 namespace ave {
+namespace media {
 
 class Message;
 
 class Handler : public std::enable_shared_from_this<Handler> {
  public:
-  Handler() : id_(0), message_counter_(0) {}
+  Handler() : id_(0), message_counter_(static_cast<uint32_t>(0)) {}
   virtual ~Handler() = default;
 
   Looper::handler_id id() const { return id_; }
@@ -51,6 +52,7 @@ class Handler : public std::enable_shared_from_this<Handler> {
   AVE_DISALLOW_COPY_AND_ASSIGN(Handler);
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AVE_HANDLER_H */

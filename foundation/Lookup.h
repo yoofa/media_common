@@ -12,6 +12,7 @@
 #include <vector>
 
 namespace ave {
+namespace media {
 
 template <typename T, typename U>
 struct Lookup {
@@ -63,6 +64,8 @@ bool Lookup<T, U>::rlookup(const U& from, T* to) const {
   }
   return false;
 }
-} /* namespace ave */
+
+}  // namespace media
+}  // namespace ave
 
 #endif /* !LOOKUP_H */

@@ -21,6 +21,7 @@
 #include "base/errors.h"
 
 namespace ave {
+namespace media {
 
 class Message;
 class Handler;
@@ -28,8 +29,9 @@ class ReplyToken;
 
 class Looper : public std::enable_shared_from_this<Looper> {
  public:
-  typedef int32_t event_id;
-  typedef int32_t handler_id;
+  using event_id = int32_t;
+  using handler_id = int32_t;
+
   Looper();
   virtual ~Looper();
 
@@ -93,6 +95,7 @@ class Looper : public std::enable_shared_from_this<Looper> {
   AVE_DISALLOW_COPY_AND_ASSIGN(Looper);
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AVE_LOOPER_H */
