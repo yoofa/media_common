@@ -16,12 +16,13 @@
 #include "media_utils.h"
 
 namespace ave {
+namespace media {
 
 class MediaPacket {
  protected:
   // for private construct
   struct protect_parameter {
-    explicit protect_parameter() {}
+    explicit protect_parameter() = default;
   };
 
  public:
@@ -72,6 +73,7 @@ class MediaPacket {
   SampleInfo sample_info_;
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !MEDIA_PACKET_H */

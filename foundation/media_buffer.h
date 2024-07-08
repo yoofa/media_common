@@ -9,7 +9,7 @@
 #define AVE_MEDIA_BUFFER_H
 
 #include "base/buffer.h"
-#include "foundation/message.h"
+#include "message.h"
 
 namespace ave {
 namespace media {

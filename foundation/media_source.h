@@ -11,11 +11,12 @@
 #include <memory>
 #include <vector>
 
-#include "foundation/message.h"
+#include "base/constructor_magic.h"
 #include "media_errors.h"
-#include "meta_data.h"
+#include "message.h"
 
 namespace ave {
+namespace media {
 
 class MediaSource : public MessageObject {
  public:
@@ -63,7 +64,7 @@ class MediaSource : public MessageObject {
   } __attribute__((packed));  // sent through Binder
 
   MediaSource() = default;
-  virtual ~MediaSource() = default;
+  ~MediaSource() override = default;
 
   // To be called before any other methods on this object, except
   // getFormat().
@@ -131,6 +132,7 @@ class MediaSource : public MessageObject {
 
 using ReadOptions = MediaSource::ReadOptions;
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !MEDIA_SOURCE_H */

@@ -14,16 +14,22 @@
 #include <string>
 #include <thread>
 
-#include "../base/count_down_latch.h"
+#include "base/attributes.h"
+#include "base/count_down_latch.h"
 #include "handler_roster.h"
 #include "message.h"
 
 namespace ave {
+namespace media {
 
 HandlerRoster gRoster;
 
 Looper::Looper()
-    : thread_(nullptr), looping_(false), start_latch_(1), stopped_(false) {}
+    : priority_(0),
+      thread_(nullptr),
+      looping_(false),
+      start_latch_(1),
+      stopped_(false) {}
 
 Looper::~Looper() {
   stop();
@@ -42,9 +48,9 @@ void Looper::unregisterHandler(handler_id handler_id) {
   gRoster.unregisterHandler(handler_id);
 }
 
-int32_t Looper::start(int32_t priority) {
+int32_t Looper::start(int32_t priority AVE_MAYBE_UNUSED) {
   std::lock_guard<std::mutex> guard(mutex_);
-  if (thread_.get()) {
+  if (thread_ != nullptr) {
     return -1;
   }
 
@@ -62,7 +68,7 @@ int32_t Looper::stop() {
     looping_ = false;
     condition_.notify_all();
   }
-  if (thread_.get()) {
+  if (thread_ != nullptr) {
     thread_->join();
     thread_.release();
   }
@@ -75,7 +81,7 @@ void Looper::post(const std::shared_ptr<Message>& message,
   if (stopped_) {
     return;
   }
-  int64_t whenUs;
+  int64_t whenUs = 0;
   if (delayUs > 0) {
     int64_t nowUs = getNowUs();
     whenUs = (delayUs > (std::numeric_limits<int64_t>::max() - nowUs)
@@ -104,7 +110,7 @@ void Looper::loop() {
         continue;
       }
 
-      auto& event = event_queue_.top();
+      const auto& event = event_queue_.top();
       int64_t nowUs = getNowUs();
 
       if (event->when_us_ > nowUs) {
@@ -155,4 +161,5 @@ status_t Looper::postReply(const std::shared_ptr<ReplyToken>& replyToken,
   return err;
 }
 
+}  // namespace media
 }  // namespace ave

@@ -19,6 +19,7 @@
 #include "looper.h"
 
 namespace ave {
+namespace media {
 
 class Handler;
 class Buffer;
@@ -33,7 +34,7 @@ class ReplyToken : public MessageObject {
  public:
   explicit ReplyToken(const std::shared_ptr<Looper>& looper)
       : looper_(looper), replied_(false) {}
-  virtual ~ReplyToken() = default;
+  ~ReplyToken() override = default;
 
  private:
   friend class Message;
@@ -168,6 +169,7 @@ class Message : public std::enable_shared_from_this<Message> {
   AVE_DISALLOW_COPY_AND_ASSIGN(Message);
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !AVE_MESSAGE_H */

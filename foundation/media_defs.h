@@ -9,6 +9,7 @@
 #define MEDIA_DEFS_H
 
 namespace ave {
+namespace media {
 
 extern const char* MEDIA_MIMETYPE_IMAGE_JPEG;
 extern const char* MEDIA_MIMETYPE_IMAGE_ANDROID_HEIC;
@@ -136,6 +137,8 @@ enum AudioEncoding {
   kAudioEncodingPcm24bitPacked = 21,
   kAudioEncodingPcm32bit = 22,
 };
-} /* namespace ave */
+
+}  // namespace media
+}  // namespace ave
 
 #endif /* !MEDIA_DEFS_H */

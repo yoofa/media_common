@@ -14,6 +14,7 @@
 #include "looper.h"
 
 namespace ave {
+namespace media {
 
 status_t ReplyToken::setReply(const std::shared_ptr<Message>& reply) {
   if (replied_) {
@@ -26,10 +27,10 @@ status_t ReplyToken::setReply(const std::shared_ptr<Message>& reply) {
   return 0;
 }
 
-Message::Message() : what_(0), handler_id_(0) {}
+Message::Message() : what_(static_cast<uint32_t>(0)), handler_id_(0) {}
 
 Message::Message(uint32_t what, const std::shared_ptr<Handler> handler)
-    : what_(what) {
+    : what_(what), handler_id_(0) {
   setHandler(handler);
 }
 
@@ -46,11 +47,10 @@ uint32_t Message::what() const {
 }
 
 void Message::setHandler(const std::shared_ptr<Handler> handler) {
-  if (handler == nullptr || handler.get() == nullptr) {
+  if (handler == nullptr) {
     handler_id_ = 0;
     handler_.reset();
     looper_.reset();
-
   } else {
     handler_id_ = handler->id();
     handler_ = handler;
@@ -60,7 +60,7 @@ void Message::setHandler(const std::shared_ptr<Handler> handler) {
 
 status_t Message::post(int64_t delayUs) {
   auto looper = looper_.lock();
-  if (looper.get() != nullptr) {
+  if (looper != nullptr) {
     looper->post(shared_from_this(), delayUs);
   }
   return 0;
@@ -87,7 +87,7 @@ bool Message::senderAwaitsResponse(std::shared_ptr<ReplyToken>& replyId) {
   if (!found) {
     return false;
   }
-  return replyId.get() != nullptr;
+  return replyId != nullptr;
 }
 
 status_t Message::postReply(const std::shared_ptr<ReplyToken>& replyId) {
@@ -156,7 +156,7 @@ bool Message::contains(const char* name) const {
   }                                                                   \
                                                                       \
   bool Message::find##NAME(const char* name, TYPENAME* value) const { \
-    std::shared_ptr<ave::Message::Item> item;                         \
+    std::shared_ptr<Message::Item> item;                              \
     item = findItem(name, Message::kType##NAME);                      \
     if (item) {                                                       \
       *value = std::get<TYPENAME>(item->value);                       \
@@ -263,18 +263,18 @@ bool Message::findReplyToken(const char* name,
 }
 
 void Message::setBuffer(const char* name,
-                        const std::shared_ptr<ave::Buffer> buffer) {
+                        const std::shared_ptr<ave::media::Buffer> buffer) {
   std::shared_ptr<Message::Item> item = allocateItem(name);
   item->mType = kTypeBuffer;
   item->value = std::move(buffer);
 }
 
 bool Message::findBuffer(const char* name,
-                         std::shared_ptr<ave::Buffer>& buffer) const {
+                         std::shared_ptr<ave::media::Buffer>& buffer) const {
   std::shared_ptr<Message::Item> item;
   item = findItem(name, kTypeBuffer);
   if (item) {
-    auto result = std::get<std::shared_ptr<ave::Buffer>>(item->value);
+    auto result = std::get<std::shared_ptr<ave::media::Buffer>>(item->value);
     buffer = std::move(result);
     return true;
   }
@@ -282,18 +282,20 @@ bool Message::findBuffer(const char* name,
 }
 
 void Message::setObject(const char* name,
-                        const std::shared_ptr<ave::MessageObject> obj) {
+                        const std::shared_ptr<ave::media::MessageObject> obj) {
   std::shared_ptr<Message::Item> item = allocateItem(name);
   item->mType = kTypeObject;
   item->value = std::move(obj);
 }
 
-bool Message::findObject(const char* name,
-                         std::shared_ptr<ave::MessageObject>& obj) const {
+bool Message::findObject(
+    const char* name,
+    std::shared_ptr<ave::media::MessageObject>& obj) const {
   std::shared_ptr<Message::Item> item;
   item = findItem(name, kTypeObject);
   if (item) {
-    auto result = std::get<std::shared_ptr<ave::MessageObject>>(item->value);
+    auto result =
+        std::get<std::shared_ptr<ave::media::MessageObject>>(item->value);
     obj = std::move(result);
     return true;
   }
@@ -309,9 +311,10 @@ std::shared_ptr<Message> Message::dup() const {
 
 void Message::deliver() {
   auto handler = handler_.lock();
-  if (handler.get() != nullptr) {
+  if (handler != nullptr) {
     handler->deliverMessage(shared_from_this());
   }
 }
 
+}  // namespace media
 }  // namespace ave

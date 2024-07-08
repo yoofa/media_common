@@ -9,6 +9,7 @@
 #define PIXEL_FORMAT_H
 
 namespace ave {
+namespace media {
 
 /**
  * Pixel format.
@@ -588,6 +589,7 @@ enum PixelFormat {
                  ///< might differ between versions
 };
 
+}  // namespace media
 }  // namespace ave
 
 #endif /* !PIXEL_FORMAT_H */

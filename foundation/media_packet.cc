@@ -9,6 +9,7 @@
 #include "base/checks.h"
 
 namespace ave {
+namespace media {
 
 MediaPacket MediaPacket::Create(size_t size) {
   return MediaPacket(size, protect_parameter());
@@ -34,7 +35,7 @@ MediaPacket::MediaPacket(void* handle, protect_parameter)
       media_type_(MediaType::UNKNOWN),
       sample_info_(0) {}
 
-MediaPacket::~MediaPacket() {}
+MediaPacket::~MediaPacket() = default;
 
 MediaPacket::MediaPacket(const MediaPacket& other) {
   if (other.buffer_type_ == PacketBufferType::kTypeNormal) {
@@ -92,9 +93,9 @@ VideoSampleInfo* MediaPacket::video_info() {
 uint8_t* MediaPacket::data() {
   if (buffer_type_ == PacketBufferType::kTypeNormal) {
     return data_->data();
-  } else {
-    return nullptr;
   }
+  return nullptr;
 }
 
+}  // namespace media
 }  // namespace ave

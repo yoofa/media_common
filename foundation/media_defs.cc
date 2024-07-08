@@ -7,10 +7,10 @@
 
 #include "media_defs.h"
 
-#include <string.h>
-#include <strings.h>
+#include <cstring>
 
 namespace ave {
+namespace media {
 
 const char* MEDIA_MIMETYPE_IMAGE_JPEG = "image/jpeg";
 const char* MEDIA_MIMETYPE_IMAGE_ANDROID_HEIC = "image/vnd.android.heic";
@@ -78,97 +78,128 @@ CodecType mimeToCodec(const char* mime) {
   // VIDEO
   if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_VP8, mime, strlen(mime))) {
     return VIDEO_VP8;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_VP9, mime, strlen(mime))) {
-    return VIDEO_VP9;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_AV1, mime, strlen(mime))) {
-    return VIDEO_AV1;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_AVC, mime, strlen(mime))) {
-    return VIDEO_AVC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_HEVC, mime, strlen(mime))) {
-    return VIDEO_HEVC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MPEG4, mime, strlen(mime))) {
-    return VIDEO_MPEG4;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_H263, mime, strlen(mime))) {
-    return VIDEO_H263;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MPEG2, mime, strlen(mime))) {
-    return VIDEO_MPEG2;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_RAW, mime, strlen(mime))) {
-    return VIDEO_RAW;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DOLBY_VISION, mime,
-                          strlen(mime))) {
-    return VIDEO_DOLBY_VISION;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DIVX, mime, strlen(mime))) {
-    return VIDEO_DIVX;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DIVX3, mime, strlen(mime))) {
-    return VIDEO_DIVX3;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_XVID, mime, strlen(mime))) {
-    return VIDEO_XVID;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MJPEG, mime, strlen(mime))) {
-    return VIDEO_MJPEG;
-
-    // AUDIO
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AMR_NB, mime, strlen(mime))) {
-    return AUDIO_AMR_NB;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AMR_WB, mime, strlen(mime))) {
-    return AUDIO_AMR_WB;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG, mime, strlen(mime))) {
-    return AUDIO_MPEG;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_I, mime,
-                          strlen(mime))) {
-    return AUDIO_MPEG_LAYER_I;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_II, mime,
-                          strlen(mime))) {
-    return AUDIO_MPEG_LAYER_II;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MIDI, mime, strlen(mime))) {
-    return AUDIO_MIDI;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AAC, mime, strlen(mime))) {
-    return AUDIO_AAC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_QCELP, mime, strlen(mime))) {
-    return AUDIO_QCELP;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_VORBIS, mime, strlen(mime))) {
-    return AUDIO_VORBIS;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_OPUS, mime, strlen(mime))) {
-    return AUDIO_OPUS;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_G711_ALAW, mime, strlen(mime))) {
-    return AUDIO_G711_ALAW;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_G711_MLAW, mime, strlen(mime))) {
-    return AUDIO_G711_MLAW;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_RAW, mime, strlen(mime))) {
-    return AUDIO_RAW;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_FLAC, mime, strlen(mime))) {
-    return AUDIO_FLAC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AAC_ADTS, mime, strlen(mime))) {
-    return AUDIO_AAC_ADTS;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MSGSM, mime, strlen(mime))) {
-    return AUDIO_MSGSM;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AC3, mime, strlen(mime))) {
-    return AUDIO_AC3;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_EAC3, mime, strlen(mime))) {
-    return AUDIO_EAC3;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_EAC3_JOC, mime, strlen(mime))) {
-    return AUDIO_EAC3_JOC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AC4, mime, strlen(mime))) {
-    return AUDIO_AC4;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEGH_MHA1, mime,
-                          strlen(mime))) {
-    return AUDIO_MPEGH_MHA1;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEGH_MHM1, mime,
-                          strlen(mime))) {
-    return AUDIO_MPEGH_MHM1;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_ALAC, mime, strlen(mime))) {
-    return AUDIO_ALAC;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_WMA, mime, strlen(mime))) {
-    return AUDIO_WMA;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MS_ADPCM, mime, strlen(mime))) {
-    return AUDIO_MS_ADPCM;
-  } else if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_DVI_IMA_ADPCM, mime,
-                          strlen(mime))) {
-    return AUDIO_DVI_IMA_ADPCM;
-
-    // UNKNOWN
-  } else {
-    return CODEC_UNKNOWN;
   }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_VP9, mime, strlen(mime))) {
+    return VIDEO_VP9;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_AV1, mime, strlen(mime))) {
+    return VIDEO_AV1;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_AVC, mime, strlen(mime))) {
+    return VIDEO_AVC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_HEVC, mime, strlen(mime))) {
+    return VIDEO_HEVC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MPEG4, mime, strlen(mime))) {
+    return VIDEO_MPEG4;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_H263, mime, strlen(mime))) {
+    return VIDEO_H263;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MPEG2, mime, strlen(mime))) {
+    return VIDEO_MPEG2;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_RAW, mime, strlen(mime))) {
+    return VIDEO_RAW;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DOLBY_VISION, mime, strlen(mime))) {
+    return VIDEO_DOLBY_VISION;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DIVX, mime, strlen(mime))) {
+    return VIDEO_DIVX;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_DIVX3, mime, strlen(mime))) {
+    return VIDEO_DIVX3;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_XVID, mime, strlen(mime))) {
+    return VIDEO_XVID;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_VIDEO_MJPEG, mime, strlen(mime))) {
+    return VIDEO_MJPEG;
+  }
+  // AUDIO
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AMR_NB, mime, strlen(mime))) {
+    return AUDIO_AMR_NB;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AMR_WB, mime, strlen(mime))) {
+    return AUDIO_AMR_WB;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG, mime, strlen(mime))) {
+    return AUDIO_MPEG;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_I, mime, strlen(mime))) {
+    return AUDIO_MPEG_LAYER_I;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_II, mime, strlen(mime))) {
+    return AUDIO_MPEG_LAYER_II;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MIDI, mime, strlen(mime))) {
+    return AUDIO_MIDI;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AAC, mime, strlen(mime))) {
+    return AUDIO_AAC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_QCELP, mime, strlen(mime))) {
+    return AUDIO_QCELP;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_VORBIS, mime, strlen(mime))) {
+    return AUDIO_VORBIS;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_OPUS, mime, strlen(mime))) {
+    return AUDIO_OPUS;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_G711_ALAW, mime, strlen(mime))) {
+    return AUDIO_G711_ALAW;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_G711_MLAW, mime, strlen(mime))) {
+    return AUDIO_G711_MLAW;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_RAW, mime, strlen(mime))) {
+    return AUDIO_RAW;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_FLAC, mime, strlen(mime))) {
+    return AUDIO_FLAC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AAC_ADTS, mime, strlen(mime))) {
+    return AUDIO_AAC_ADTS;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MSGSM, mime, strlen(mime))) {
+    return AUDIO_MSGSM;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AC3, mime, strlen(mime))) {
+    return AUDIO_AC3;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_EAC3, mime, strlen(mime))) {
+    return AUDIO_EAC3;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_EAC3_JOC, mime, strlen(mime))) {
+    return AUDIO_EAC3_JOC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_AC4, mime, strlen(mime))) {
+    return AUDIO_AC4;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEGH_MHA1, mime, strlen(mime))) {
+    return AUDIO_MPEGH_MHA1;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MPEGH_MHM1, mime, strlen(mime))) {
+    return AUDIO_MPEGH_MHM1;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_ALAC, mime, strlen(mime))) {
+    return AUDIO_ALAC;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_WMA, mime, strlen(mime))) {
+    return AUDIO_WMA;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_MS_ADPCM, mime, strlen(mime))) {
+    return AUDIO_MS_ADPCM;
+  }
+  if (!strncasecmp(MEDIA_MIMETYPE_AUDIO_DVI_IMA_ADPCM, mime, strlen(mime))) {
+    return AUDIO_DVI_IMA_ADPCM;
+  }
+  // UNKNOWN
+  return CODEC_UNKNOWN;
 }
 
-} /* namespace ave */
+}  // namespace media
+}  // namespace ave
