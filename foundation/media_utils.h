@@ -10,8 +10,12 @@
 
 #include <sys/types.h>
 
+#include "base/units/time_delta.h"
+
 #include "../codec/codec_id.h"
 #include "pixel_format.h"
+#include "../audio/channel_layout.h"
+
 
 namespace ave {
 namespace media {
@@ -42,9 +46,10 @@ const char* get_media_type_string(enum MediaType media_type);
 
 struct AudioSampleInfo {
   CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
-  int64_t timestamp_us = -1;
+  base::TimeDelta timestamp = base::TimeDelta::Zero();
+  base::TimeDelta duration = base::TimeDelta::Zero();
   int64_t sample_rate_hz = -1;
-  int16_t channels = -1;
+  ChannelLayout channels = CHANNEL_LAYOUT_NONE;
   int64_t samples_per_channel = -1;
   int16_t bits_per_sample = -1;
 };
@@ -52,8 +57,9 @@ struct AudioSampleInfo {
 struct VideoSampleInfo {
   CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
   // pts
-  int64_t timestamp_us = -1;
-  int64_t dts_us = -1;
+  base::TimeDelta timestamp = base::TimeDelta::Zero();
+  base::TimeDelta duration = base::TimeDelta::Zero();
+  base::TimeDelta decoding_timestamp = base::TimeDelta::Zero();
   int16_t stride = -1;
   int16_t width = -1;
   int16_t height = -1;
