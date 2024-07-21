@@ -8,10 +8,12 @@
 #ifndef CODEC_ID_H
 #define CODEC_ID_H
 
+#include <cstdint>
+
 namespace ave {
 namespace media {
 
-enum class CodecId {
+enum class CodecId : uint32_t {
   AV_CODEC_ID_NONE,
 
   /* video codecs */
