@@ -27,11 +27,19 @@ ave_library("hevc_util") {
   ]
 }
 
+ave_library("media_utils") {
+  sources = [
+    "media_source.h",
+    "media_utils.cc",
+  ]
+}
+
 ave_library("media_packet") {
   sources = [
     "media_packet.cc",
     "media_packet.h",
   ]
+  deps = [ "//base/units" ]
 }
 
 ave_library("esds") {
@@ -56,28 +64,28 @@ ave_library("bit_reader") {
 }
 
 ave_library("foundation") {
-  sources = [
-    "media_source.h",
-    "media_utils.cc",
-    "media_utils.h",
+  sources = [ "media_source.h" ]
+  deps = [
+    ":bit_reader",
+    ":color_utils",
+    ":esds",
+    ":handler",
+    ":media_packet",
+    ":media_utils",
   ]
 }
 
 # Tests
-
-source_set("media_packet_unittest") {
+#
+ave_library("unittest_sources") {
   testonly = true
-  sources = [ "test/media_packet_unittest.cc" ]
-  deps = [
-    ":media_packet",
-    "//test:test_support",
-  ]
+  deps = [ "test:media_packet_test" ]
 }
 
 executable("media_foundation_unittests") {
   testonly = true
   deps = [
-    ":media_packet_unittest",
+    ":unittest_sources",
     "//test:test_main",
     "//test:test_support",
   ]

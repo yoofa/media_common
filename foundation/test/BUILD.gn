@@ -1,4 +1,5 @@
-import("//ave.gni")
+import("//base/build/ave.gni")
+
 group("test") {
   testonly = true
   deps = [ ":looper_test" ]
@@ -10,7 +11,16 @@ executable("looper_test") {
   sources = [ "looper_test.cpp" ]
 
   deps = [
-    "../../common:foundation",
-    "../../test:test_support",
+    "..:foundation",
+    "//test:test_support",
+  ]
+}
+
+ave_source_set("media_packet_test") {
+  testonly = true
+  sources = [ "media_packet_unittest.cc" ]
+  deps = [
+    "..:media_packet",
+    "//test:test_support",
   ]
 }

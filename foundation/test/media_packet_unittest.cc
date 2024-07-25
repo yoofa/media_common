@@ -5,13 +5,16 @@
  * Distributed under terms of the GPLv2 license.
  */
 
-#include "../media_utils.h"
-#include "test/gtest.h"
-
 #include "../media_packet.h"
+#include "../media_utils.h"
+
+#include "base/units/timestamp.h"
+
+#include "test/gtest.h"
 #include "third_party/googletest/src/googletest/include/gtest/gtest.h"
 
 namespace ave {
+namespace media {
 
 namespace {
 const size_t kSampleCount = 10;
@@ -19,16 +22,17 @@ const char* kTestString = "hello world";
 
 // default audio sample info
 const CodecId DefaultAudioCodecId = CodecId::AV_CODEC_ID_AAC;
-const int64_t DefaultAudioTimeStamp = 1000;
+const base::Timestamp DefaultAudioTimeStamp = base::Timestamp::Millis(1000);
 const int64_t DefaultAudioSampleRate = 44100;
-const int16_t DefaultAudioChannelCount = 2;
+const ChannelLayout DefaultAudioChannelLayout =
+    ChannelLayout::CHANNEL_LAYOUT_STEREO;
 const int64_t DefaultAudioSamplePerChannel = 480;
 const int16_t DefaultAudioBitsPerSample = 16;
 
 // default video sample info
 const CodecId DefaultVideoCodecId = CodecId::AV_CODEC_ID_MPEG1VIDEO;
-const int64_t DefaultVideoTimeStamp = 1000;
-const int64_t DefaultVideoDts = 1000;
+const base::Timestamp DefaultVideoTimeStamp = base::Timestamp::Millis(1000);
+const base::Timestamp DefaultVideoDts = base::Timestamp::Millis(1000);
 const int16_t DefaultVideoWidth = 1920;
 const int16_t DefaultVideoHeight = 1080;
 const int16_t DefaultVideoStride = 1920;
@@ -78,9 +82,9 @@ TEST(MediaPacketTest, SampleInfoBasicTest) {
 
   // default packet type is unknown
   EXPECT_EQ(packet.media_type(), MediaType::UNKNOWN);
-  auto audio_info = packet.audio_info();
+  auto* audio_info = packet.audio_info();
   EXPECT_EQ(audio_info, nullptr);
-  auto video_info = packet.video_info();
+  auto* video_info = packet.video_info();
   EXPECT_EQ(video_info, nullptr);
 
   // set packet type to audio
@@ -101,23 +105,23 @@ TEST(MediaPacketTest, SampleInfoBasicTest) {
 TEST(MediaPacketTest, AudioInfoCopyTest) {
   MediaPacket packet = MediaPacket::Create(kSampleCount);
   packet.SetMediaType(MediaType::AUDIO);
-  auto audio_info = packet.audio_info();
+  auto* audio_info = packet.audio_info();
   EXPECT_NE(audio_info, nullptr);
   audio_info->codec_id = DefaultAudioCodecId;
-  audio_info->timestamp_us = DefaultAudioTimeStamp;
+  audio_info->pts = DefaultAudioTimeStamp;
   audio_info->sample_rate_hz = DefaultAudioSampleRate;
-  audio_info->channels = DefaultAudioChannelCount;
+  audio_info->channel_layout = DefaultAudioChannelLayout;
   audio_info->samples_per_channel = DefaultAudioSamplePerChannel;
   audio_info->bits_per_sample = DefaultAudioBitsPerSample;
 
   MediaPacket copy = packet;
   EXPECT_EQ(copy.media_type(), MediaType::AUDIO);
-  auto copy_packet_info = copy.audio_info();
+  auto* copy_packet_info = copy.audio_info();
   EXPECT_NE(copy_packet_info, nullptr);
   EXPECT_EQ(copy_packet_info->codec_id, DefaultAudioCodecId);
-  EXPECT_EQ(copy_packet_info->timestamp_us, DefaultAudioTimeStamp);
+  EXPECT_EQ(copy_packet_info->pts, DefaultAudioTimeStamp);
   EXPECT_EQ(copy_packet_info->sample_rate_hz, DefaultAudioSampleRate);
-  EXPECT_EQ(copy_packet_info->channels, DefaultAudioChannelCount);
+  EXPECT_EQ(copy_packet_info->channel_layout, DefaultAudioChannelLayout);
   EXPECT_EQ(copy_packet_info->samples_per_channel,
             DefaultAudioSamplePerChannel);
   EXPECT_EQ(copy_packet_info->bits_per_sample, DefaultAudioBitsPerSample);
@@ -126,11 +130,11 @@ TEST(MediaPacketTest, AudioInfoCopyTest) {
 TEST(MediaPacketTest, VideoInfoCopyTest) {
   MediaPacket packet = MediaPacket::Create(kSampleCount);
   packet.SetMediaType(MediaType::VIDEO);
-  auto video_info = packet.video_info();
+  auto* video_info = packet.video_info();
   EXPECT_NE(video_info, nullptr);
   video_info->codec_id = DefaultVideoCodecId;
-  video_info->timestamp_us = DefaultVideoTimeStamp;
-  video_info->dts_us = DefaultVideoDts;
+  video_info->pts = DefaultVideoTimeStamp;
+  video_info->dts = DefaultVideoDts;
   video_info->width = DefaultVideoWidth;
   video_info->height = DefaultVideoHeight;
   video_info->stride = DefaultVideoStride;
@@ -141,12 +145,12 @@ TEST(MediaPacketTest, VideoInfoCopyTest) {
 
   MediaPacket copy = packet;
   EXPECT_EQ(copy.media_type(), MediaType::VIDEO);
-  auto copy_packet_info = copy.video_info();
+  auto* copy_packet_info = copy.video_info();
   EXPECT_NE(copy_packet_info, nullptr);
 
   EXPECT_EQ(copy_packet_info->codec_id, DefaultVideoCodecId);
-  EXPECT_EQ(copy_packet_info->timestamp_us, DefaultVideoTimeStamp);
-  EXPECT_EQ(copy_packet_info->dts_us, DefaultVideoDts);
+  EXPECT_EQ(copy_packet_info->pts, DefaultVideoTimeStamp);
+  EXPECT_EQ(copy_packet_info->dts, DefaultVideoDts);
   EXPECT_EQ(copy_packet_info->width, DefaultVideoWidth);
   EXPECT_EQ(copy_packet_info->height, DefaultVideoHeight);
   EXPECT_EQ(copy_packet_info->stride, DefaultVideoStride);
@@ -156,4 +160,5 @@ TEST(MediaPacketTest, VideoInfoCopyTest) {
   EXPECT_EQ(copy_packet_info->qp, DefaultVideoQP);
 }
 
+}  // namespace media
 }  // namespace ave

@@ -13,6 +13,7 @@
 #include <variant>
 
 #include "base/units/time_delta.h"
+#include "base/units/timestamp.h"
 
 #include "../audio/channel_layout.h"
 #include "../codec/codec_id.h"
@@ -47,24 +48,29 @@ const char* get_media_type_string(enum MediaType media_type);
 
 struct AudioSampleInfo {
   CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
-  base::TimeDelta timestamp = base::TimeDelta::Zero();
-  base::TimeDelta duration = base::TimeDelta::Zero();
   int64_t sample_rate_hz = -1;
-  ChannelLayout channels = CHANNEL_LAYOUT_NONE;
+  ChannelLayout channel_layout = CHANNEL_LAYOUT_NONE;
   int64_t samples_per_channel = -1;
   int16_t bits_per_sample = -1;
+
+  base::Timestamp pts = base::Timestamp::Zero();
+  base::Timestamp dts = base::Timestamp::Zero();
+  base::TimeDelta duration = base::TimeDelta::Zero();
 };
 
 struct VideoSampleInfo {
   CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
-  // pts
-  base::TimeDelta timestamp = base::TimeDelta::Zero();
-  base::TimeDelta duration = base::TimeDelta::Zero();
-  base::TimeDelta decoding_timestamp = base::TimeDelta::Zero();
   int16_t stride = -1;
   int16_t width = -1;
   int16_t height = -1;
   int16_t rotation = -1;
+
+  // timestamp
+  base::Timestamp pts = base::Timestamp::Zero();
+  base::Timestamp dts = base::Timestamp::Zero();
+  base::TimeDelta duration = base::TimeDelta::Zero();
+
+  // raw
   PixelFormat pixel_format = PixelFormat::AV_PIX_FMT_NONE;
 
   // encoded

@@ -6,3 +6,12 @@ group("media") {
     "foundation",
   ]
 }
+
+ave_executable("media_unittests") {
+  testonly = true
+  deps = [
+    "foundation:unittest_sources",
+    "//test:test_main",
+    "//test:test_support",
+  ]
+}
