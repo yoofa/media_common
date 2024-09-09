@@ -9,12 +9,17 @@
 
 #include "base/checks.h"
 #include "base/logging.h"
+#include "base/task_util/default_task_runner_factory.h"
+#include "base/task_util/task_runner_factory.h"
 #include "base/time_utils.h"
 
 #include <cmath>
 
 namespace ave {
 namespace media {
+
+using ave::base::CreateDefaultTaskRunnerFactory;
+using ave::base::TaskRunnerFactory;
 
 namespace {
 
@@ -24,14 +29,14 @@ const int64_t kAnchorFluctuationAllowedUs = 10000LL;
 
 }  // namespace
 
-MediaClock::MediaClock(TaskRunnerFactory* task_runner_factory)
-    : task_runner_(std::make_unique<ave::base::TaskRunner>(
-          task_runner_factory->CreateTaskRunner(
+MediaClock::MediaClock()
+    : task_runner_(std::make_unique<TaskRunner>(
+          CreateDefaultTaskRunnerFactory()->CreateTaskRunner(
               "MediaClock",
               TaskRunnerFactory::Priority::NORMAL))),
       starting_time_media_us_(-1),
-      anchor_time_media_us_(0),
-      anchor_time_real_us_(0),
+      anchor_time_media_us_(-1),
+      anchor_time_real_us_(-1),
       max_time_media_us_(INT64_MAX),
       playback_rate_(1.0),
       notify_callback_(nullptr) {}
@@ -169,8 +174,14 @@ void MediaClock::AddTimerEvent(std::function<void(TimerReason)> callback,
     AVE_LOG(LS_WARNING) << "AddTimerEvent, no anchor time set";
     return;
   }
+
+  bool trigger_now = (playback_rate_ != 0.0);
+  // TODO: if is not lastest event, do not trigger now
+
   timers_.emplace_back(std::move(callback), media_time_us, adjust_real_us);
-  ProcessTimers();
+  if (trigger_now) {
+    PostProcessTimers();
+  }
 }
 
 void MediaClock::SetNotificationCallback(Callback* callback) {
@@ -184,12 +195,13 @@ void MediaClock::Reset() {
   // process all timers and wait for them to be processed
   auto it = timers_.begin();
   while (it != timers_.end()) {
-    task_runner_->PostTask([callback = std::move(it->callback)](int64_t) {
+    task_runner_->PostTask([callback = std::move(it->callback)]() {
       callback(TimerReason::TIMER_REASON_RESET);
     });
   }
   max_time_media_us_ = INT64_MAX;
   starting_time_media_us_ = -1;
+  UpdateAnchorTimesAndPlaybackRate(-1, -1, playback_rate_);
 }
 
 void MediaClock::UpdateAnchorTimesAndPlaybackRate(int64_t anchor_time_media_us,
@@ -246,24 +258,61 @@ void MediaClock::ProcessTimers() {
   int64_t delay_us = INT64_MAX;
 
   auto it = timers_.begin();
+  std::list<std::function<void(TimerReason)>> notify_list;
+
   while (it != timers_.end()) {
-    if (it->media_time_us <= now_media_us) {
-      task_runner_->PostTask([callback = std::move(it->callback)](int64_t) {
-        callback(TimerReason::TIMER_REASON_REACHED);
-      });
+    auto diff = static_cast<double>(it->adjust_real_us) * playback_rate_ +
+                static_cast<double>(it->media_time_us - now_media_us);
+    int64_t diff_media_us = 0;
+    if (diff > static_cast<double>(INT64_MAX)) {
+      diff_media_us = INT64_MAX;
+    } else if (diff < static_cast<double>(INT64_MIN)) {
+      diff_media_us = INT64_MIN;
+    } else {
+      diff_media_us = static_cast<int64_t>(diff);
+    }
+    if (diff_media_us <= 0) {
+      notify_list.push_back(std::move(it->callback));
       it = timers_.erase(it);
     } else {
-      // calculate delay_us with playback rate
-      int64_t target_real_us =
-          anchor_time_real_us_ +
-          std::llround(
-              static_cast<double>(it->media_time_us - anchor_time_media_us_) /
-              playback_rate_);
-      delay_us =
-          std::min(delay_us, target_real_us - now_us + it->adjust_real_us);
+      if (playback_rate_ != 0.0 &&
+          diff_media_us <
+              static_cast<int64_t>(std::floor(static_cast<double>(INT64_MAX) *
+                                              playback_rate_))) {
+        int64_t target_delay_us =
+            std::llround(static_cast<double>(diff_media_us) / playback_rate_);
+        delay_us = std::min(delay_us, target_delay_us);
+      }
       ++it;
     }
   }
+
+  auto it_notify = notify_list.begin();
+  while (it_notify != notify_list.end()) {
+    // TODO: post in task runner maybe better?
+    (*it_notify)(TimerReason::TIMER_REASON_REACHED);
+    it_notify = notify_list.erase(it_notify);
+  }
+
+  // while (it != timers_.end()) {
+  //   if (it->media_time_us <= now_media_us) {
+  //     task_runner_->PostTask([callback = std::move(it->callback)](int64_t)
+  //     {
+  //       callback(TimerReason::TIMER_REASON_REACHED);
+  //     });
+  //     it = timers_.erase(it);
+  //   } else {
+  //     // calculate delay_us with playback rate
+  //     int64_t target_real_us =
+  //         anchor_time_real_us_ +
+  //         std::llround(
+  //             static_cast<double>(it->media_time_us -
+  //             anchor_time_media_us_) / playback_rate_);
+  //     delay_us =
+  //         std::min(delay_us, target_real_us - now_us + it->adjust_real_us);
+  //     ++it;
+  //   }
+  // }
 
   if (delay_us == INT64_MAX || timers_.empty() || playback_rate_ == 0.0 ||
       anchor_time_media_us_ == -1) {
@@ -275,7 +324,7 @@ void MediaClock::ProcessTimers() {
 
 void MediaClock::PostProcessTimers(int64_t delay_us) {
   task_runner_->PostDelayedTask(
-      [this](int64_t) {
+      [this]() {
         std::lock_guard<std::mutex> lock(mutex_);
         ProcessTimers();
       },

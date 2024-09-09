@@ -69,6 +69,17 @@ ave_library("bit_reader") {
   ]
 }
 
+ave_library("media_clock") {
+  sources = [
+    "media_clock.cc",
+    "media_clock.h",
+  ]
+  deps = [
+    "//base:task_util",
+    "//base:timeutils",
+  ]
+}
+
 ave_library("foundation") {
   sources = [ "media_source.h" ]
   deps = [
@@ -85,7 +96,10 @@ ave_library("foundation") {
 #
 ave_library("unittest_sources") {
   testonly = true
-  deps = [ "test:media_packet_test" ]
+  deps = [
+    "test:media_clock_test",
+    "test:media_packet_test",
+  ]
 }
 
 executable("media_foundation_unittests") {

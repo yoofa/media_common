@@ -14,14 +14,12 @@
 
 #include "base/errors.h"
 #include "base/task_util/task_runner.h"
-#include "base/task_util/task_runner_factory.h"
 #include "base/thread_annotation.h"
 
 namespace ave {
 namespace media {
 
 using ave::base::TaskRunner;
-using ave::base::TaskRunnerFactory;
 
 class MediaClock {
  public:
@@ -38,7 +36,7 @@ class MediaClock {
                                  float playback_rate) = 0;
   };
 
-  explicit MediaClock(TaskRunnerFactory* task_runner_factory);
+  explicit MediaClock();
   ~MediaClock();
 
   void SetStartingTimeMedia(int64_t starting_time_media_us);

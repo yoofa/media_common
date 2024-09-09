@@ -24,3 +24,12 @@ ave_source_set("media_packet_test") {
     "//test:test_support",
   ]
 }
+
+ave_source_set("media_clock_test") {
+  testonly = true
+  sources = [ "media_clock_test.cc" ]
+  deps = [
+    "..:media_clock",
+    "//test:test_support",
+  ]
+}
