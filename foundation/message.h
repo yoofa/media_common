@@ -14,19 +14,15 @@
 
 #include "base/constructor_magic.h"
 #include "base/errors.h"
+
 #include "looper.h"
+#include "message_object.h"
 
 namespace ave {
 namespace media {
 
 class Handler;
 class Buffer;
-
-class MessageObject {
- public:
-  MessageObject() = default;
-  virtual ~MessageObject() = default;
-};
 
 class ReplyToken : public MessageObject {
  public:

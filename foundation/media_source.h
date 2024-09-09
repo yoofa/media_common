@@ -12,8 +12,9 @@
 #include <vector>
 
 #include "base/constructor_magic.h"
+
 #include "media_errors.h"
-#include "message.h"
+#include "message_object.h"
 
 namespace ave {
 namespace media {

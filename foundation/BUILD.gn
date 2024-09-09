@@ -1,6 +1,10 @@
 import("//base/build/ave.gni")
 
-ave_source_set("handler") {
+ave_source_set("message_object") {
+  sources = [ "message_object.h" ]
+}
+
+ave_library("handler") {
   sources = [
     "handler.cc",
     "handler.h",
@@ -11,6 +15,7 @@ ave_source_set("handler") {
     "message.cc",
     "message.h",
   ]
+  deps = [ ":message_object" ]
 }
 
 ave_library("avc_util") {
@@ -32,6 +37,7 @@ ave_library("media_utils") {
     "media_source.h",
     "media_utils.cc",
   ]
+  deps = [ ":message_object" ]
 }
 
 ave_library("media_packet") {
