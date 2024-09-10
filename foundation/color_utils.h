@@ -10,6 +10,8 @@
 
 #include <cstdint>
 
+#define STRINGIFY_ENUMS
+
 #include "../hardware/video_api.h"
 #include "message.h"
 
@@ -225,9 +227,8 @@ struct ColorUtils {
   static bool isHDRStaticInfoValid(HDRStaticInfo* info);
 };
 
-inline static const char* asString(ave::ColorUtils::ColorStandard i,
-                                   const char* def = "??") {
-  using namespace ave;
+inline static const char *asString(ColorUtils::ColorStandard i,
+                                   const char *def = "??") {
   switch (i) {
     case ColorUtils::kColorStandardUnspecified:
       return "Unspecified";
@@ -256,9 +257,8 @@ inline static const char* asString(ave::ColorUtils::ColorStandard i,
   }
 }
 
-inline static const char* asString(ave::ColorUtils::ColorTransfer i,
-                                   const char* def = "??") {
-  using namespace ave;
+inline static const char *asString(ColorUtils::ColorTransfer i,
+                                   const char *def = "??") {
   switch (i) {
     case ColorUtils::kColorTransferUnspecified:
       return "Unspecified";
@@ -283,9 +283,8 @@ inline static const char* asString(ave::ColorUtils::ColorTransfer i,
   }
 }
 
-inline static const char* asString(ave::ColorUtils::ColorRange i,
-                                   const char* def = "??") {
-  using namespace ave;
+inline static const char *asString(ColorUtils::ColorRange i,
+                                   const char *def = "??") {
   switch (i) {
     case ColorUtils::kColorRangeUnspecified:
       return "Unspecified";

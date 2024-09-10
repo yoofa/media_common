@@ -87,19 +87,21 @@ int32_t ColorUtils::wrapColorAspectsIntoColorStandard(
   ColorStandard res = kColorStandardUnspecified;
 
   if (sStandards.map(std::make_pair(primaries, coeffs), &res)) {
-    return res;
+    return static_cast<int32_t>(res);
   }
 
   if (!isValid(primaries) || !isValid(coeffs)) {
-    return kColorStandardUnspecified;
+    return static_cast<int32_t>(kColorStandardUnspecified);
   }
 
   // check platform media limits
   uint32_t numPrimaries = ColorAspects::PrimariesBT2020 + 1;
   if (isDefined(primaries) && isDefined(coeffs)) {
-    return kColorStandardExtendedStart + primaries + coeffs * numPrimaries;
+    return static_cast<int32_t>(kColorStandardExtendedStart + primaries +
+                                coeffs * numPrimaries);
   }
-  return kColorStandardVendorStart + primaries + coeffs * 0x100;
+  return static_cast<int32_t>(kColorStandardVendorStart + primaries +
+                              coeffs * 0x100);
 }
 
 // static
@@ -108,24 +110,25 @@ status_t ColorUtils::unwrapColorAspectsFromColorStandard(
     ColorAspects::Primaries* primaries,
     ColorAspects::MatrixCoeffs* coeffs) {
   std::pair<ColorAspects::Primaries, ColorAspects::MatrixCoeffs> res;
-  if (sStandards.map((ColorStandard)standard, &res)) {
+  if (sStandards.map(static_cast<ColorStandard>(standard), &res)) {
     *primaries = res.first;
     *coeffs = res.second;
     return OK;
   }
 
-  int32_t start = kColorStandardExtendedStart;
-  int32_t numPrimaries = ColorAspects::PrimariesBT2020 + 1;
-  int32_t numCoeffs = ColorAspects::MatrixBT2020Constant + 1;
-  if (standard >= (int32_t)kColorStandardVendorStart) {
-    start = kColorStandardVendorStart;
-    numPrimaries = ColorAspects::PrimariesOther + 1;  // 0x100
-    numCoeffs = ColorAspects::MatrixOther + 1;        // 0x100;
+  auto start = static_cast<int32_t>(kColorStandardExtendedStart);
+  auto numPrimaries = static_cast<int32_t>(ColorAspects::PrimariesBT2020) + 1;
+  auto numCoeffs = static_cast<int32_t>(ColorAspects::MatrixBT2020Constant) + 1;
+  if (standard >= static_cast<int32_t>(kColorStandardVendorStart)) {
+    start = static_cast<int32_t>(kColorStandardVendorStart);
+    numPrimaries =
+        static_cast<int32_t>(ColorAspects::PrimariesOther) + 1;      // 0x100
+    numCoeffs = static_cast<int32_t>(ColorAspects::MatrixOther) + 1; // 0x100;
   }
   if (standard >= start && standard < start + numPrimaries * numCoeffs) {
-    int32_t product = standard - start;
-    *primaries = (ColorAspects::Primaries)(product % numPrimaries);
-    *coeffs = (ColorAspects::MatrixCoeffs)(product / numPrimaries);
+    auto product = static_cast<int32_t>(standard - start);
+    *primaries = static_cast<ColorAspects::Primaries>(product % numPrimaries);
+    *coeffs = static_cast<ColorAspects::MatrixCoeffs>(product / numPrimaries);
     return OK;
   }
   *primaries = ColorAspects::PrimariesOther;
@@ -143,30 +146,30 @@ static bool isDefined(ColorAspects::Range r) {
 
 //  static
 int32_t ColorUtils::wrapColorAspectsIntoColorRange(ColorAspects::Range range) {
-  ColorRange res;
+  ColorRange res = kColorRangeUnspecified; // Initialize with a default value
   if (sRanges.map(range, &res)) {
-    return res;
-  } else if (!isValid(range)) {
-    return kColorRangeUnspecified;
-  } else {
+    return static_cast<int32_t>(res);
+  }
+  if (!isValid(range)) {
+    return static_cast<int32_t>(kColorRangeUnspecified);
+  }
     AVE_CHECK(!isDefined(range));
     // all platform values are in sRanges
-    return kColorRangeVendorStart + range;
-  }
+    return static_cast<int32_t>(kColorRangeVendorStart + range);
 }
 
 // static
 status_t ColorUtils::unwrapColorAspectsFromColorRange(
     int32_t range,
     ColorAspects::Range* aspect) {
-  if (sRanges.map((ColorRange)range, aspect)) {
+  if (sRanges.map(static_cast<ColorRange>(range), aspect)) {
     return OK;
   }
 
-  int32_t start = kColorRangeVendorStart;
-  int32_t numRanges = ColorAspects::RangeOther + 1;  // 0x100
+  auto start = static_cast<int32_t>(kColorRangeVendorStart);
+  auto numRanges = static_cast<int32_t>(ColorAspects::RangeOther) + 1; // 0x100
   if (range >= start && range < start + numRanges) {
-    *aspect = (ColorAspects::Range)(range - start);
+    *aspect = static_cast<ColorAspects::Range>(range - start);
     return OK;
   }
   *aspect = ColorAspects::RangeOther;
@@ -186,35 +189,36 @@ static bool isDefined(ColorAspects::Transfer t) {
 //  static
 int32_t ColorUtils::wrapColorAspectsIntoColorTransfer(
     ColorAspects::Transfer transfer) {
-  ColorTransfer res;
+  ColorTransfer res = kColorTransferUnspecified;
   if (sTransfers.map(transfer, &res)) {
-    return res;
-  } else if (!isValid(transfer)) {
-    return kColorTransferUnspecified;
-  } else if (isDefined(transfer)) {
-    return kColorTransferExtendedStart + transfer;
-  } else {
-    // all platform values are in sRanges
-    return kColorTransferVendorStart + transfer;
+    return static_cast<int32_t>(res);
   }
+  if (!isValid(transfer)) {
+    return static_cast<int32_t>(kColorTransferUnspecified);
+  }
+  if (isDefined(transfer)) {
+    return static_cast<int32_t>(kColorTransferExtendedStart + transfer);
+  }
+  // all platform values are in sRanges
+  return static_cast<int32_t>(kColorTransferVendorStart + transfer);
 }
 
 // static
 status_t ColorUtils::unwrapColorAspectsFromColorTransfer(
     int32_t transfer,
     ColorAspects::Transfer* aspect) {
-  if (sTransfers.map((ColorTransfer)transfer, aspect)) {
+  if (sTransfers.map(static_cast<ColorTransfer>(transfer), aspect)) {
     return OK;
   }
 
-  int32_t start = kColorTransferExtendedStart;
-  int32_t numTransfers = ColorAspects::TransferST428 + 1;
-  if (transfer >= (int32_t)kColorTransferVendorStart) {
-    start = kColorTransferVendorStart;
+  auto start = static_cast<int32_t>(kColorTransferExtendedStart);
+  auto numTransfers = static_cast<int32_t>(ColorAspects::TransferST428) + 1;
+  if (transfer >= static_cast<int32_t>(kColorTransferVendorStart)) {
+    start = static_cast<int32_t>(kColorTransferVendorStart);
     numTransfers = ColorAspects::TransferOther + 1;  // 0x100
   }
   if (transfer >= start && transfer < start + numTransfers) {
-    *aspect = (ColorAspects::Transfer)(transfer - start);
+    *aspect = static_cast<ColorAspects::Transfer>(transfer - start);
     return OK;
   }
   *aspect = ColorAspects::TransferOther;
@@ -248,9 +252,8 @@ status_t ColorUtils::convertCodecColorAspectsToPlatformAspects(
   if (isValid(aspects.mRange) && isValid(aspects.mPrimaries) &&
       isValid(aspects.mMatrixCoeffs) && isValid(aspects.mTransfer)) {
     return OK;
-  } else {
-    return BAD_VALUE;
   }
+  return BAD_VALUE;
 }
 
 const static Lookup<int32_t, ColorAspects::Primaries> sIsoPrimaries{{
@@ -342,15 +345,11 @@ void ColorUtils::convertIsoColorAspectsToCodecAspects(int32_t primaries,
       fullRange ? ColorAspects::RangeFull : ColorAspects::RangeLimited;
 }
 
-void ColorUtils::convertIsoColorAspectsToPlatformAspects(int32_t primaries,
-                                                         int32_t intransfer,
-                                                         int32_t coeffs,
-                                                         bool fullRange,
-                                                         int32_t* range,
-                                                         int32_t* standard,
-                                                         int32_t* outtransfer) {
-  ColorAspects aspects;
-  convertIsoColorAspectsToCodecAspects(primaries, intransfer, coeffs, fullRange,
+void ColorUtils::convertIsoColorAspectsToPlatformAspects(
+    int32_t primaries, int32_t transfer, int32_t coeffs, bool fullRange,
+    int32_t *range, int32_t *standard, int32_t *outtransfer) {
+  ColorAspects aspects = {};
+  convertIsoColorAspectsToCodecAspects(primaries, transfer, coeffs, fullRange,
                                        aspects);
   convertCodecColorAspectsToPlatformAspects(aspects, range, standard,
                                             outtransfer);
@@ -358,11 +357,13 @@ void ColorUtils::convertIsoColorAspectsToPlatformAspects(int32_t primaries,
 
 // static
 ColorAspects ColorUtils::unpackToColorAspects(uint32_t packed) {
-  ColorAspects aspects;
-  aspects.mRange = (ColorAspects::Range)((packed >> 24) & 0xFF);
-  aspects.mPrimaries = (ColorAspects::Primaries)((packed >> 16) & 0xFF);
-  aspects.mMatrixCoeffs = (ColorAspects::MatrixCoeffs)((packed >> 8) & 0xFF);
-  aspects.mTransfer = (ColorAspects::Transfer)(packed & 0xFF);
+  ColorAspects aspects = {};
+  aspects.mRange = static_cast<ColorAspects::Range>((packed >> 24) & 0xFF);
+  aspects.mPrimaries =
+      static_cast<ColorAspects::Primaries>((packed >> 16) & 0xFF);
+  aspects.mMatrixCoeffs =
+      static_cast<ColorAspects::MatrixCoeffs>((packed >> 8) & 0xFF);
+  aspects.mTransfer = static_cast<ColorAspects::Transfer>(packed & 0xFF);
 
   return aspects;
 }
@@ -377,14 +378,14 @@ uint32_t ColorUtils::packToU32(const ColorAspects& aspects) {
 void ColorUtils::setDefaultCodecColorAspectsIfNeeded(ColorAspects& aspects,
                                                      int32_t width,
                                                      int32_t height) {
-  ColorAspects::MatrixCoeffs coeffs;
-  ColorAspects::Primaries primaries;
+  ColorAspects::MatrixCoeffs coeffs = ColorAspects::MatrixUnspecified;
+  ColorAspects::Primaries primaries = ColorAspects::PrimariesUnspecified;
 
   // Default to BT2020, BT709 or BT601 based on size. Allow 2.35:1 aspect ratio.
   // Limit BT601 to PAL or smaller, BT2020 to 4K or larger, leaving BT709 for
   // all resolutions in between.
   if (width >= 3840 || height >= 3840 ||
-      width * (int64_t)height >= 3840 * 1634) {
+      width * static_cast<int64_t>(height) >= 3840 * 1634) {
     primaries = ColorAspects::PrimariesBT2020;
     coeffs = ColorAspects::MatrixBT2020;
   } else if ((width <= 720 && height > 480 && height <= 576) ||
@@ -672,13 +673,13 @@ void ColorUtils::getColorConfigFromFormat(
     int32_t* standard,
     int32_t* transfer) {
   if (!format->findInt32("color-range", range)) {
-    *range = kColorRangeUnspecified;
+    *range = static_cast<int32_t>(kColorRangeUnspecified);
   }
   if (!format->findInt32("color-standard", standard)) {
-    *standard = kColorStandardUnspecified;
+    *standard = static_cast<int32_t>(kColorStandardUnspecified);
   }
   if (!format->findInt32("color-transfer", transfer)) {
-    *transfer = kColorTransferUnspecified;
+    *transfer = static_cast<int32_t>(kColorTransferUnspecified);
   }
 }
 
@@ -686,7 +687,7 @@ void ColorUtils::getColorConfigFromFormat(
 void ColorUtils::copyColorConfig(const std::shared_ptr<Message>& source,
                                  std::shared_ptr<Message>& target) {
   // 0 values are unspecified
-  int32_t value;
+  int32_t value = 0;
   if (source->findInt32("color-range", &value)) {
     target->setInt32("color-range", value);
   }
@@ -702,16 +703,18 @@ void ColorUtils::copyColorConfig(const std::shared_ptr<Message>& source,
 void ColorUtils::getColorAspectsFromFormat(
     const std::shared_ptr<Message>& format,
     ColorAspects& aspects) {
-  int32_t range, standard, transfer;
+  int32_t range = 0, standard = 0, transfer = 0;
   getColorConfigFromFormat(format, &range, &standard, &transfer);
 
   if (convertPlatformColorAspectsToCodecAspects(range, standard, transfer,
                                                 aspects) != OK) {
     AVE_LOG(LS_WARNING) << "Ignoring illegal color aspects(R:" << range << "("
-                        << asString((ColorRange)range) << "), S:" << standard
-                        << "(" << asString((ColorStandard)standard)
+                        << asString(static_cast<ColorRange>(range))
+                        << "), S:" << standard << "("
+                        << asString(static_cast<ColorStandard>(standard))
                         << "), T:" << transfer << "("
-                        << asString((ColorTransfer)transfer) << "))";
+                        << asString(static_cast<ColorTransfer>(transfer))
+                        << "))";
     // Invalid values were converted to unspecified !params!, but otherwise were
     // not changed For encoders, we leave these as is. For decoders, we will use
     // default values.
@@ -725,10 +728,11 @@ void ColorUtils::getColorAspectsFromFormat(
                       << "), T:" << aspects.mTransfer << "("
                       << asString(aspects.mTransfer) << ")) "
                       << "from format (out:R:" << range << "("
-                      << asString((ColorRange)range) << "), S:" << standard
-                      << "(" << asString((ColorStandard)standard)
+                      << asString(static_cast<ColorRange>(range))
+                      << "), S:" << standard << "("
+                      << asString(static_cast<ColorStandard>(standard))
                       << "), T:" << transfer << "("
-                      << asString((ColorTransfer)transfer) << "))";
+                      << asString(static_cast<ColorTransfer>(transfer)) << "))";
 }
 
 // static
@@ -883,12 +887,15 @@ bool ColorUtils::getHDRStaticInfoFromFormat(
 
 // static
 bool ColorUtils::isHDRStaticInfoValid(HDRStaticInfo* info) {
-  if (info->sType1.mMaxDisplayLuminance > 0.0f &&
-      info->sType1.mMinDisplayLuminance > 0.0f)
+  if (info->sType1.mMaxDisplayLuminance > 0 &&
+      info->sType1.mMinDisplayLuminance > 0) {
+
     return true;
-  if (info->sType1.mMaxContentLightLevel > 0.0f &&
-      info->sType1.mMaxFrameAverageLightLevel > 0.0f)
+  }
+  if (info->sType1.mMaxContentLightLevel > 0 &&
+      info->sType1.mMaxFrameAverageLightLevel > 0) {
     return true;
+  }
   return false;
 }
 
