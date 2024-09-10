@@ -6,3 +6,10 @@ ave_library("audio_codec_properity") {
     "audio_codec_properity.h",
   ]
 }
+
+ave_library("codec_id") {
+  sources = [
+    "codec_id.cc",
+    "codec_id.h",
+  ]
+}

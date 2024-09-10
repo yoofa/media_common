@@ -538,6 +538,10 @@ enum class CodecId : uint32_t {
   AV_CODEC_ID_BIN_DATA,
 
 };
+
+CodecId MimeToCodecId(const char* mime);
+const char* CodecIdToMime(CodecId codec_id);
+
 }  // namespace media
 }  // namespace ave
 
