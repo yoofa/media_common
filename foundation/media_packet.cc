@@ -21,7 +21,7 @@ MediaPacket MediaPacket::CreateWithHandle(void* handle) {
 
 MediaPacket::MediaPacket(size_t size, protect_parameter)
     : size_(size),
-      data_(std::make_shared<base::Buffer8>(size)),
+      data_(std::make_shared<Buffer>(size)),
       native_handle_(nullptr),
       buffer_type_(PacketBufferType::kTypeNormal),
       media_type_(MediaType::UNKNOWN),
@@ -72,13 +72,13 @@ void MediaPacket::SetMediaType(MediaType type) {
 void MediaPacket::SetSize(size_t size) {
   AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
   AVE_DCHECK(size > 0);
-  data_->SetSize(size);
+  data_ = std::make_shared<Buffer>(size);
   size_ = data_->size();
 }
 
 void MediaPacket::SetData(uint8_t* data, size_t size) {
   AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
-  data_->SetData(data, size);
+  data_ = std::make_shared<Buffer>(data, size);
   size_ = data_->size();
 }
 
@@ -90,7 +90,8 @@ VideoSampleInfo* MediaPacket::video_info() {
   return std::get_if<VideoSampleInfo>(&sample_info_);
 }
 
-uint8_t* MediaPacket::data() {
+const uint8_t* MediaPacket::data() const {
+  AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
   if (buffer_type_ == PacketBufferType::kTypeNormal) {
     return data_->data();
   }

@@ -11,14 +11,14 @@
 #include <memory>
 #include <variant>
 
-#include "base/buffer.h"
-
+#include "buffer.h"
 #include "media_utils.h"
+#include "message_object.h"
 
 namespace ave {
 namespace media {
 
-class MediaPacket {
+class MediaPacket : MessageObject {
  protected:
   // for private construct
   struct protect_parameter {
@@ -36,14 +36,16 @@ class MediaPacket {
 
  private:
   explicit MediaPacket(size_t size, protect_parameter);
-  MediaPacket(void* handle, protect_parameter);
+  explicit MediaPacket(void* handle, protect_parameter);
 
  public:
-  ~MediaPacket();
+  ~MediaPacket() override;
   // only support copy construct
   MediaPacket(const MediaPacket& other);
 
   void SetMediaType(MediaType type);
+
+  // will reset size and data
   void SetSize(size_t size);
   void SetData(uint8_t* data, size_t size);
 
@@ -53,8 +55,8 @@ class MediaPacket {
   VideoSampleInfo* video_info();
 
   size_t size() const { return size_; }
-  std::shared_ptr<base::Buffer8>& buffer() { return data_; }
-  uint8_t* data();
+  std::shared_ptr<Buffer>& buffer() { return data_; }
+  const uint8_t* data() const;
 
   MediaType media_type() const { return media_type_; }
   PacketBufferType buffer_type() const { return buffer_type_; }
@@ -64,7 +66,7 @@ class MediaPacket {
   using SampleInfo = std::variant<int, AudioSampleInfo, VideoSampleInfo>;
 
   size_t size_;
-  std::shared_ptr<base::Buffer8> data_;
+  std::shared_ptr<Buffer> data_;
   void* native_handle_;
   PacketBufferType buffer_type_;
   MediaType media_type_;

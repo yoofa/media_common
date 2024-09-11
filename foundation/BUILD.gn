@@ -17,6 +17,14 @@ ave_source_set("message_object") {
   sources = [ "message_object.h" ]
 }
 
+ave_library("buffer") {
+  sources = [
+    "buffer.cc",
+    "buffer.h",
+  ]
+  deps = [ ":handler" ]
+}
+
 ave_library("handler") {
   sources = [
     "handler.cc",
@@ -74,7 +82,10 @@ ave_library("media_packet") {
     "media_packet.cc",
     "media_packet.h",
   ]
-  deps = [ "//base/units" ]
+  deps = [
+    ":buffer",
+    "//base/units",
+  ]
 }
 
 ave_library("esds") {
