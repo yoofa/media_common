@@ -125,6 +125,8 @@ struct MediaTrackInfo {
   std::variant<OtherTrackInfo, AudioTrackInfo, VideoTrackInfo> track_info;
 };
 
+MediaType CodecMediaType(CodecId codec_id);
+
 }  // namespace media
 }  // namespace ave
 #endif /* !MEDIA_UTILS_H */
