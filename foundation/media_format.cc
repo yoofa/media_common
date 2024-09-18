@@ -25,6 +25,23 @@ MediaFormat& MediaFormat::SetStreamType(const MediaType stream_type) {
   return *this;
 }
 
+MediaType MediaFormat::stream_type() const {
+  return stream_type_;
+}
+
+MediaFormat& MediaFormat::SetMime(const char* mime) {
+  if (!mime) {
+    AVE_LOG(LS_WARNING) << "SetMime failed, mime is null";
+  } else {
+    mime_ = mime;
+  }
+  return *this;
+}
+
+std::string MediaFormat::mime() const {
+  return mime_;
+}
+
 MediaFormat& MediaFormat::SetCodec(const CodecId codec) {
   switch (stream_type_) {
     case MediaType::VIDEO: {

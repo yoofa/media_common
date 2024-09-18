@@ -84,6 +84,8 @@ class MediaSource : public MessageObject {
   // Returns the format of the data output by this media source.
   virtual std::shared_ptr<MediaFormat> GetFormat() = 0;
 
+  virtual bool SupportReadMultiple() { return false; }
+
   // Returns a new buffer of data. Call blocks until a
   // buffer is available, an error is encountered of the end of the stream
   // is reached.
@@ -93,6 +95,13 @@ class MediaSource : public MessageObject {
   // but should be prepared for buffers of the new configuration.
   virtual status_t Read(std::shared_ptr<MediaPacket>& packet,
                         const ReadOptions* options) = 0;
+
+  virtual status_t ReadMultiple(
+      std::vector<std::shared_ptr<MediaPacket>>& /* packets */,
+      size_t /* count */,
+      const ReadOptions* /* options */) {
+    return ERROR_UNSUPPORTED;
+  }
 
   // Causes this source to suspend pulling data from its upstream source
   // until a subsequent read-with-seek. This is currently not supported

@@ -23,7 +23,11 @@ class MediaFormat {
   MediaFormat();
   virtual ~MediaFormat() = default;
 
-  MediaFormat& SetStreamType(const ave::media::MediaType stream_type);
+  MediaFormat& SetStreamType(const MediaType stream_type);
+  MediaType stream_type() const;
+
+  MediaFormat& SetMime(const char* mime);
+  std::string mime() const;
 
   MediaFormat& SetCodec(const CodecId codec);
   CodecId codec() const;
@@ -61,9 +65,12 @@ class MediaFormat {
 
  private:
   ave::media::MediaType stream_type_;
+  std::string mime_;
   MediaTrackInfo track_info_;
   std::shared_ptr<Message> meta_;
 };
+
+// std::string ToLogString(const MediaFormat& format);
 
 }  // namespace media
 }  // namespace ave

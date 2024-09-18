@@ -27,9 +27,11 @@ enum class MediaType {
   VIDEO,
   AUDIO,
   DATA,  ///< Opaque data information usually continuous
+  TIMED_TEXT,
   SUBTITLE,
   ATTACHMENT,  ///< Opaque data information usually sparse
   NB,
+  MAX,
 };
 
 enum class PictureType {
