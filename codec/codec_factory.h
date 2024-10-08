@@ -21,17 +21,20 @@ namespace media {
 
 class CodecFactory {
  public:
-  virtual std::shared_ptr<Codec> createCodecByType(CodecId codec_id,
+  virtual std::vector<CodecInfo> GetSupportedCodecs() = 0;
+
+  virtual std::shared_ptr<Codec> CreateCodecByType(CodecId codec_id,
                                                    bool encoder) = 0;
-  virtual std::shared_ptr<Codec> createCodecByName(std::string& name) = 0;
+  virtual std::shared_ptr<Codec> CreateCodecByName(std::string& name) = 0;
+
   virtual std::string name() = 0;
   virtual int16_t priority() = 0;
 };
 
-status_t registerCodecFactory(std::shared_ptr<CodecFactory> factory);
+status_t RegisterCodecFactory(std::shared_ptr<CodecFactory> factory);
 
-std::shared_ptr<Codec> createCodecByType(CodecId codec_id, bool encoder);
-std::shared_ptr<Codec> createCodecByName(std::string& name);
+std::shared_ptr<Codec> CreateCodecByType(CodecId codec_id, bool encoder);
+std::shared_ptr<Codec> CreateCodecByName(std::string& name);
 
 }  // namespace media
 }  // namespace ave

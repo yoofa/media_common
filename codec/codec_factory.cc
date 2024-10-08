@@ -16,7 +16,7 @@ namespace media {
 
 std::list<std::shared_ptr<CodecFactory>> gCodecFactories;
 
-status_t registerCodecFactory(std::shared_ptr<CodecFactory> factory) {
+status_t RegisterCodecFactory(std::shared_ptr<CodecFactory> factory) {
   // insert with priority
   auto it = gCodecFactories.begin();
   for (; it != gCodecFactories.end(); it++) {
@@ -28,9 +28,9 @@ status_t registerCodecFactory(std::shared_ptr<CodecFactory> factory) {
   return OK;
 }
 
-std::shared_ptr<Codec> createCodecByType(CodecId codec_id, bool encoder) {
+std::shared_ptr<Codec> CreateCodecByType(CodecId codec_id, bool encoder) {
   for (auto factory : gCodecFactories) {
-    auto codec = factory->createCodecByType(codec_id, encoder);
+    auto codec = factory->CreateCodecByType(codec_id, encoder);
     if (codec) {
       return codec;
     }
@@ -38,9 +38,9 @@ std::shared_ptr<Codec> createCodecByType(CodecId codec_id, bool encoder) {
   return nullptr;
 }
 
-std::shared_ptr<Codec> createCodecByName(std::string& name) {
+std::shared_ptr<Codec> CreateCodecByName(std::string& name) {
   for (auto factory : gCodecFactories) {
-    auto codec = factory->createCodecByName(name);
+    auto codec = factory->CreateCodecByName(name);
     if (codec) {
       return codec;
     }
