@@ -21,7 +21,7 @@ const size_t kSampleCount = 10;
 const char* kTestString = "hello world";
 
 // default audio sample info
-const CodecId DefaultAudioCodecId = CodecId::AV_CODEC_ID_AAC;
+const CodecId DefaultAudioCodecId = CodecId::AVE_CODEC_ID_AAC;
 const base::Timestamp DefaultAudioTimeStamp = base::Timestamp::Millis(1000);
 const int64_t DefaultAudioSampleRate = 44100;
 const ChannelLayout DefaultAudioChannelLayout =
@@ -30,7 +30,7 @@ const int64_t DefaultAudioSamplePerChannel = 480;
 const int16_t DefaultAudioBitsPerSample = 16;
 
 // default video sample info
-const CodecId DefaultVideoCodecId = CodecId::AV_CODEC_ID_MPEG1VIDEO;
+const CodecId DefaultVideoCodecId = CodecId::AVE_CODEC_ID_MPEG1VIDEO;
 const base::Timestamp DefaultVideoTimeStamp = base::Timestamp::Millis(1000);
 const base::Timestamp DefaultVideoDts = base::Timestamp::Millis(1000);
 const int16_t DefaultVideoWidth = 1920;

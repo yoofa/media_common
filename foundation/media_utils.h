@@ -49,7 +49,7 @@ enum class PictureType {
 const char* get_media_type_string(enum MediaType media_type);
 
 struct AudioSampleInfo {
-  CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
+  CodecId codec_id = CodecId::AVE_CODEC_ID_NONE;
   int64_t sample_rate_hz = -1;
   ChannelLayout channel_layout = CHANNEL_LAYOUT_NONE;
   int64_t samples_per_channel = -1;
@@ -61,7 +61,7 @@ struct AudioSampleInfo {
 };
 
 struct VideoSampleInfo {
-  CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
+  CodecId codec_id = CodecId::AVE_CODEC_ID_NONE;
   int16_t stride = -1;
   int16_t width = -1;
   int16_t height = -1;
@@ -81,7 +81,7 @@ struct VideoSampleInfo {
 };
 
 struct AudioTrackInfo {
-  CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
+  CodecId codec_id = CodecId::AVE_CODEC_ID_NONE;
   base::TimeDelta duration = base::TimeDelta::Zero();
   int64_t bitrate_bps = -1;
   int64_t sample_rate_hz = -1;
@@ -91,7 +91,7 @@ struct AudioTrackInfo {
 };
 
 struct VideoTrackInfo {
-  CodecId codec_id = CodecId::AV_CODEC_ID_NONE;
+  CodecId codec_id = CodecId::AVE_CODEC_ID_NONE;
   base::TimeDelta duration = base::TimeDelta::Zero();
   int64_t bitrate_bps = -1;
   int16_t stride = -1;

@@ -68,7 +68,7 @@ CodecId MediaFormat::codec() const {
       return track_info_.audio().codec_id;
     }
     default: {
-      return CodecId::AV_CODEC_ID_NONE;
+      return CodecId::AVE_CODEC_ID_NONE;
     }
   }
 }

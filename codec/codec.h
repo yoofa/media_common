@@ -25,12 +25,12 @@ namespace media {
 struct CodecInfo {
   std::string name;
   std::string mime;
-  MediaType media_type;
+  MediaType media_type = MediaType::UNKNOWN;
 
   // TODO: support resolution, frame rate, bit rate, etc
 
-  bool is_encoder;
-  bool hardware_accelerated;
+  bool is_encoder = false;
+  bool hardware_accelerated = false;
 };
 
 // callback for codec

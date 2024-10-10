@@ -36,7 +36,10 @@ ave_library("handler") {
     "message.cc",
     "message.h",
   ]
-  deps = [ ":message_object" ]
+  deps = [
+    ":message_object",
+    "//base:count_down_latch",
+  ]
 }
 
 ave_library("avc_util") {
@@ -69,6 +72,13 @@ ave_library("media_source") {
     ":media_format",
     ":media_packet",
     ":message_object",
+  ]
+}
+
+ave_library("media_defs") {
+  sources = [
+    "media_defs.cc",
+    "media_defs.h",
   ]
 }
 
