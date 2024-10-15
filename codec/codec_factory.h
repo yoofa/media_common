@@ -21,14 +21,19 @@ namespace media {
 
 class CodecFactory {
  public:
+  virtual ~CodecFactory() = default;
+
   virtual std::vector<CodecInfo> GetSupportedCodecs() = 0;
 
   virtual std::shared_ptr<Codec> CreateCodecByType(CodecId codec_id,
                                                    bool encoder) = 0;
-  virtual std::shared_ptr<Codec> CreateCodecByName(std::string& name) = 0;
+  virtual std::shared_ptr<Codec> CreateCodecByName(const std::string& name) = 0;
 
-  virtual std::string name() = 0;
-  virtual int16_t priority() = 0;
+  virtual std::shared_ptr<Codec> CreateCodecByMime(const std::string& mime,
+                                                   bool encoder) = 0;
+
+  virtual std::string name() const = 0;
+  virtual int16_t priority() const = 0;
 };
 
 status_t RegisterCodecFactory(std::shared_ptr<CodecFactory> factory);

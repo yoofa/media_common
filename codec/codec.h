@@ -13,6 +13,7 @@
 #include "base/errors.h"
 
 #include "../crypto/crypto.h"
+#include "../foundation/media_format.h"
 #include "../foundation/media_utils.h"
 #include "../foundation/message.h"
 #include "../video/video_render.h"
@@ -35,11 +36,12 @@ struct CodecInfo {
 
 // callback for codec
 class CodecCallback {
+ public:
   virtual ~CodecCallback() = default;
   // fill the input buffer
-  virtual void OnInputBufferAvailable(int32_t index) = 0;
+  virtual void OnInputBufferAvailable(size_t index) = 0;
   // output buffer is available
-  virtual void OnOutputBufferAvailable(int32_t index) = 0;
+  virtual void OnOutputBufferAvailable(size_t index) = 0;
   // output format is changed
   virtual void OnOutputFormatChanged(
       const std::shared_ptr<Message>& format) = 0;
@@ -54,7 +56,7 @@ struct CodecConfig {
   CodecInfo info;
   std::shared_ptr<VideoRender> video_render;
   std::shared_ptr<Crypto> crypto;
-  std::shared_ptr<Message> format;
+  std::shared_ptr<MediaFormat> format;
 };
 
 // this class is porting from Android MediaCodec
@@ -74,7 +76,9 @@ class Codec {
   virtual status_t Flush() = 0;
   virtual status_t Release() = 0;
 
-  virtual status_t DequeueInputBuffer(int32_t index, int64_t timeout_ms) = 0;
+  virtual std::shared_ptr<CodecBuffer> DequeueInputBuffer(
+      int32_t index,
+      int64_t timeout_ms) = 0;
 
   /* queueInputBuffer to codec, will copy the data to codec internal buffer
    * return -EAGAIN if the codec is not ready or input queue in full
@@ -85,8 +89,9 @@ class Codec {
   virtual status_t QueueInputBuffer(std::shared_ptr<CodecBuffer>& buffer,
                                     int64_t timeout_ms) = 0;
 
-  virtual status_t DequeueOutputBuffer(std::shared_ptr<CodecBuffer>& buffer,
-                                       int64_t timeout_ms) = 0;
+  virtual std::shared_ptr<CodecBuffer> DequeueOutputBuffer(
+      int32_t index,
+      int64_t timeout_ms) = 0;
 
   /* release the output buffer
    * render: true - render the buffer, false - only release the buffer
