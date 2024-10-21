@@ -73,7 +73,7 @@ struct VideoSampleInfo {
   base::TimeDelta duration = base::TimeDelta::Zero();
 
   // raw
-  PixelFormat pixel_format = PixelFormat::AV_PIX_FMT_NONE;
+  PixelFormat pixel_format = PixelFormat::AVE_PIX_FMT_NONE;
 
   // encoded
   PictureType picture_type = PictureType::NONE;
@@ -98,7 +98,7 @@ struct VideoTrackInfo {
   int16_t width = -1;
   int16_t height = -1;
   int16_t rotation = -1;
-  PixelFormat pixel_format = PixelFormat::AV_PIX_FMT_NONE;
+  PixelFormat pixel_format = PixelFormat::AVE_PIX_FMT_NONE;
 };
 
 struct OtherTrackInfo {};

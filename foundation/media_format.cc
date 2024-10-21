@@ -198,7 +198,7 @@ MediaFormat& MediaFormat::SetPixelFormat(const PixelFormat pixel_format) {
 PixelFormat MediaFormat::pixel_format() const {
   if (stream_type_ != MediaType::VIDEO) {
     AVE_LOG(LS_WARNING) << "pixel_format failed, stream type is not video";
-    return PixelFormat::AV_PIX_FMT_NONE;
+    return PixelFormat::AVE_PIX_FMT_NONE;
   }
   return track_info_.video().pixel_format;
 }

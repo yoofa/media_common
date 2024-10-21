@@ -37,7 +37,7 @@ const int16_t DefaultVideoWidth = 1920;
 const int16_t DefaultVideoHeight = 1080;
 const int16_t DefaultVideoStride = 1920;
 const int16_t DefaultVideoRotation = 0;
-const PixelFormat DefaultVideoPixelFormat = PixelFormat::AV_PIX_FMT_YUV420P;
+const PixelFormat DefaultVideoPixelFormat = PixelFormat::AVE_PIX_FMT_YUV420P;
 const PictureType DefaultVideoPictureTyoe = PictureType::B;
 const int16_t DefaultVideoQP = 25;
 
