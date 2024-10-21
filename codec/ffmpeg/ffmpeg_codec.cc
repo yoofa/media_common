@@ -10,7 +10,8 @@
 #include "base/attributes.h"
 #include "base/sequence_checker.h"
 #include "base/task_util/default_task_runner_factory.h"
-#include "base/time_utils.h"
+
+#include "ffmpeg_codec_utils.h"
 
 namespace ave {
 namespace media {
@@ -51,6 +52,12 @@ status_t FFmpegCodec::Configure(const std::shared_ptr<CodecConfig>& config) {
     // AVCodecContext fields codec_ctx_->width = config->info.width;
     // codec_ctx_->height = config->info.height;
     // TODO: config to codec_ctx_ mapping
+    auto format = config->format;
+    if (format->stream_type() == MediaType::VIDEO) {
+      ConfigureVideoCodec(format.get(), codec_ctx_);
+    } else if (format->stream_type() == MediaType::AUDIO) {
+      ConfigureAudioCodec(format.get(), codec_ctx_);
+    }
 
     // TODO: use buffer cnt in config
     input_buffers_ = std::vector<BufferEntry>(kMaxInputBuffers);

@@ -25,6 +25,7 @@ ave_library("ffmpeg_utils") {
   ]
   deps = [
     "..:codec_id",
+    "//base:logging",
     "//third_party/ffmpeg",
   ]
 }
@@ -35,5 +36,8 @@ ave_executable("ffmpeg_codec_example") {
     ":ffmpeg_codec",
     "//base:attributes",
     "//base:logging",
+    "//media/audio:audio_channel_layout",
+    "//media/foundation:media_format",
+    "//third_party/ffmpeg",
   ]
 }
