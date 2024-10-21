@@ -11,11 +11,15 @@ namespace ave {
 
 namespace media {
 
+CodecBuffer::CodecBuffer() : CodecBuffer(0) {}
+
 CodecBuffer::CodecBuffer(size_t capacity)
     : Buffer(capacity),
       buffer_index_(-1),
       texture_id_(-1),
-      native_handle_(nullptr) {}
+      native_handle_(nullptr),
+      buffer_type_(BufferType::kTypeNormal),
+      format_(std::make_shared<MediaFormat>()) {}
 
 CodecBuffer::~CodecBuffer() = default;
 
