@@ -7,17 +7,16 @@
 
 #include "media_clock.h"
 
+#include <cmath>
+
 #include "base/checks.h"
 #include "base/logging.h"
 #include "base/task_util/default_task_runner_factory.h"
 #include "base/task_util/task_runner_factory.h"
 #include "base/time_utils.h"
 
-#include <cmath>
-
 namespace ave {
 namespace media {
-
 using ave::base::CreateDefaultTaskRunnerFactory;
 using ave::base::TaskRunnerFactory;
 
@@ -166,7 +165,7 @@ status_t MediaClock::GetRealTimeFor(int64_t target_media_us,
   return OK;
 }
 
-void MediaClock::AddTimerEvent(std::function<void(TimerReason)> callback,
+void MediaClock::AddTimerEvent(std::unique_ptr<TimerEvent> event,
                                int64_t media_time_us,
                                int64_t adjust_real_us) {
   std::lock_guard<std::mutex> lock(mutex_);
@@ -178,7 +177,7 @@ void MediaClock::AddTimerEvent(std::function<void(TimerReason)> callback,
   bool trigger_now = (playback_rate_ != 0.0);
   // TODO: if is not lastest event, do not trigger now
 
-  timers_.emplace_back(std::move(callback), media_time_us, adjust_real_us);
+  timers_.emplace_back(std::move(event), media_time_us, adjust_real_us);
   if (trigger_now) {
     PostProcessTimers();
   }
@@ -196,7 +195,7 @@ void MediaClock::Reset() {
   auto it = timers_.begin();
   while (it != timers_.end()) {
     task_runner_->PostTask([callback = std::move(it->callback)]() {
-      callback(TimerReason::TIMER_REASON_RESET);
+      callback->OnTimerEvent(TimerReason::TIMER_REASON_RESET);
     });
   }
   max_time_media_us_ = INT64_MAX;
@@ -258,7 +257,7 @@ void MediaClock::ProcessTimers() {
   int64_t delay_us = INT64_MAX;
 
   auto it = timers_.begin();
-  std::list<std::function<void(TimerReason)>> notify_list;
+  std::list<std::unique_ptr<TimerEvent>> notify_list;
 
   while (it != timers_.end()) {
     auto diff = static_cast<double>(it->adjust_real_us) * playback_rate_ +
@@ -290,7 +289,7 @@ void MediaClock::ProcessTimers() {
   auto it_notify = notify_list.begin();
   while (it_notify != notify_list.end()) {
     // TODO: post in task runner maybe better?
-    (*it_notify)(TimerReason::TIMER_REASON_REACHED);
+    (*it_notify)->OnTimerEvent(TimerReason::TIMER_REASON_REACHED);
     it_notify = notify_list.erase(it_notify);
   }
 
