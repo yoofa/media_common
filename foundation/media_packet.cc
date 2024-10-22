@@ -91,7 +91,6 @@ VideoSampleInfo* MediaPacket::video_info() {
 }
 
 const uint8_t* MediaPacket::data() const {
-  AVE_DCHECK(buffer_type_ == PacketBufferType::kTypeNormal);
   if (buffer_type_ == PacketBufferType::kTypeNormal) {
     return data_->data();
   }
